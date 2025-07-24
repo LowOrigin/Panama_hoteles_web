@@ -130,3 +130,51 @@ footer {
   font-size: 14px;
   color: var(--text-muted);
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+th, td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #1f1f1f;
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.btn-action {
+  padding: 6px 10px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-action:hover {
+  background-color: #2980b9;
+}
+
+.btn-volver {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-top: 20px;
+  background-color: #555;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.btn-volver:hover {
+  background-color: #777;
+}

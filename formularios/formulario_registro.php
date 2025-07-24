@@ -27,21 +27,39 @@
   </div>
 
   <script>
-    const form = document.getElementById('formRegistro');
-    const mensaje = document.getElementById('mensaje');
+  const form = document.getElementById('formRegistro');
+  const mensaje = document.getElementById('mensaje');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    try {
       const resp = await fetch('../clases/registrar.php', {
         method: 'POST',
         body: formData
       });
+
       const data = await resp.json();
       mensaje.textContent = data.message;
-      mensaje.style.color = data.success ? 'green' : 'red';
-      if (data.success) form.reset();
-    });
-  </script>
+      mensaje.style.color = data.success ? 'limegreen' : 'red';
+      mensaje.style.marginTop = '10px';
+      mensaje.style.fontWeight = 'bold';
+
+      if (data.success) {
+        form.reset();
+        // Espera 1.5s y redirige al login
+        setTimeout(() => {
+          window.location.href = 'login_form.php';
+        }, 1500);
+      }
+
+    } catch (err) {
+      mensaje.textContent = "Error inesperado. Intenta de nuevo.";
+      mensaje.style.color = 'red';
+    }
+  });
+</script>
+
 </body>
 </html>

@@ -1,4 +1,3 @@
-// clases/Registro.php
 <?php
 require_once("mod_db.php");
 require_once("SanitizarEntrada.php");
