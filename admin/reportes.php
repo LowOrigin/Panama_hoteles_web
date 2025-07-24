@@ -2,7 +2,8 @@
 require_once '../clases/mod_db.php';
 $db = (new mod_db())->conn;
 
-// 查询每个酒店被预订的次数
+// Generar reporte de reservas por hotel
+// Este reporte muestra el total de reservas por cada hotel
 $sql = "SELECT h.nombre, COUNT(r.id) as total_reservas
         FROM hoteles h
         LEFT JOIN reservas r ON h.id = r.hotel_id
