@@ -1,0 +1,90 @@
+/* login.css – Estilo específico para la página de login */
+
+body {
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.login-container {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+.login-container h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #1a73e8;
+  text-align: center;
+}
+
+.login-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 0.7rem;
+  background-color: #1a73e8;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-container button:hover {
+  background-color: #125ab6;
+}
+
+.mensaje-error {
+  color: red;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.registro-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.registro-link a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.registro-link a:hover {
+  text-decoration: underline;
+}
+
+.btn-volver {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  text-decoration: none;
+  color: #1a73e8;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.btn-volver:hover {
+  text-decoration: underline;
+}
