@@ -1,21 +1,19 @@
-<!-- formulario_registro.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Registro de Cliente</title>
-  <link rel="stylesheet" href="../css/estilos.css" />
+  <link rel="stylesheet" href="../css/estilos.css">
 </head>
 <body>
   <div class="card-container">
     <h1>Registro de Cliente</h1>
-
     <form id="formRegistro">
-      <input type="text" name="nombre" placeholder="Nombre" required />
-      <input type="text" name="apellido" placeholder="Apellido" required />
-      <input type="text" name="usuario" placeholder="Usuario" required />
-      <input type="email" name="correo" placeholder="Correo" required />
-      <input type="password" name="clave" placeholder="Contraseña" required />
+      <input type="text" name="nombre" placeholder="Nombre" required>
+      <input type="text" name="apellido" placeholder="Apellido" required>
+      <input type="text" name="usuario" placeholder="Usuario" required>
+      <input type="email" name="correo" placeholder="Correo electrónico" required>
+      <input type="password" name="pasword" placeholder="Contraseña" required>
       <select name="sexo" required>
         <option value="">Selecciona sexo</option>
         <option value="M">Masculino</option>
@@ -24,10 +22,13 @@
       <button type="submit">Registrarse</button>
     </form>
     <div id="mensaje"></div>
+    <p>¿Ya tienes cuenta? <a href="login_form.php">Inicia sesión</a></p>
   </div>
 
   <script>
     const form = document.getElementById('formRegistro');
+    const mensaje = document.getElementById('mensaje');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
@@ -36,7 +37,8 @@
         body: formData
       });
       const data = await resp.json();
-      document.getElementById('mensaje').textContent = data.message;
+      mensaje.textContent = data.message;
+      mensaje.style.color = data.success ? 'green' : 'red';
       if (data.success) form.reset();
     });
   </script>
