@@ -15,7 +15,7 @@
       <button type="submit">Ingresar</button>
     </form>
     <p>¿No tienes cuenta? <a href="formulario_registro.php">Regístrate</a></p>
-   <?php if (isset($_GET['error'])) echo '<p class="error">' . htmlspecialchars($_GET['error']) . '</p>'; ?>
+    <?php if (isset($_GET['error'])) echo '<p style="color:red">' . htmlspecialchars($_GET['error']) . '</p>'; ?>
   </div>
 </body>
 </html>
