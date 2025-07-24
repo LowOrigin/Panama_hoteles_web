@@ -1,6 +1,8 @@
 <?php
-// Inicia la sesión PHP para poder usar variables de sesión (por ejemplo, usuario logueado)
+// Inicia la sesión PHP para poder usar variables de sesión (por ejemplo, para saber si el usuario ha iniciado sesión)
 session_start();
+
+// Se obtiene el valor de la variable de sesión 'usuario', si existe; si no, se asigna null
 $usuario = $_SESSION['usuario'] ?? null;
 ?>
 <!DOCTYPE html>
@@ -8,66 +10,35 @@ $usuario = $_SESSION['usuario'] ?? null;
 <head>
   <meta charset="UTF-8">
   <title>Inicio - Sistema de Hoteles</title>
+  <!-- Se enlaza la hoja de estilos general -->
   <link rel="stylesheet" href="../css/estilosGenerales.css">
 </head>
 <body>
+  <!-- Contenedor principal con estilo de tarjeta -->
   <div class="card-container">
     <h1>Sistema de Hoteles</h1>
+
+    <!-- Muestra un saludo personalizado si el usuario ha iniciado sesión -->
     <h2>
       <?php if ($usuario): ?>
-        Bienvenido, <?= htmlspecialchars($usuario); ?>
+        Bienvenido, <?= htmlspecialchars($usuario); ?> <!-- Se escapa el nombre del usuario por seguridad -->
       <?php else: ?>
-        Bienvenido a nuestro sitio de hoteles
+        Bienvenido a nuestro sitio de hoteles <!-- Mensaje por defecto para visitantes no autenticados -->
       <?php endif; ?>
     </h2>
 
-<<<<<<< HEAD
-// Definición de la clase IndexController que manejará la lógica principal del index
-class IndexController
-{
-    // Método que procesa la solicitud y genera la salida HTML correspondiente
-    public function handleRequest()
-    {
-        // Si existe una variable de sesión 'usuario' significa que el usuario está logueado
-        if (isset($_SESSION['usuario'])) {
-            // Mostrar mensaje de bienvenida personalizado, usando htmlspecialchars para evitar inyección XSS
-            echo "<h2>Bienvenido, " . htmlspecialchars($_SESSION['usuario']) . "</h2>";
-        } else {
-            // Si no está logueado, mostrar mensaje de bienvenida genérico
-            echo "<h2>Bienvenido a nuestro sitio de hoteles</h2>";
-        }
-
-        // Mostrar un menú principal simple con enlaces
-        echo "<ul>";
-        // Enlace para ver la lista de hoteles (archivo ver_hotel.php en carpeta public)
-        echo "<li><a href='../public/ver_hotel.php'>Ver Hoteles</a></li>";
-        // Enlace para ir al formulario de reservar (archivo reservar.php en carpeta public)
-        echo "<li><a href='../public/reservar.php'>Reservar</a></li>";
-        // Enlace para ir al formulario de inicio de sesión (archivo login_form.php en carpeta formularios)
-        echo "<li><a href='../formularios/login_form.php'>Iniciar Sesión</a></li>";
-        // Enlace para ir a la página de registro de usuarios (registro.php en carpeta public)
-        echo "<li><a href='../public/registro.php'>Registrarse</a></li>";
-        echo "</ul>";
-    }
-}
-
-// Se crea una instancia de la clase IndexController
-$index = new IndexController();
-
-// Se llama al método handleRequest para ejecutar la lógica y mostrar el contenido
-$index->handleRequest();
-=======
+    <!-- Lista de navegación con enlaces a las funcionalidades principales -->
     <ul style="margin-top: 30px; list-style: none; padding: 0;">
-      <li><a href="../public/ver_hotel.php">🏨 Ver Hoteles</a></li>
-      <li><a href="../public/reservar.php">📅 Reservar</a></li>
-      <li><a href="../formularios/login_form.php">🔐 Iniciar Sesión</a></li>
-      <li><a href="../public/registro.php">📝 Registrarse</a></li>
+      <li><a href="../public/ver_hotel.php">🏨 Ver Hoteles</a></li>       <!-- Página para ver hoteles disponibles -->
+      <li><a href="../public/reservar.php">📅 Reservar</a></li>          <!-- Página para hacer una reserva -->
+      <li><a href="../formularios/login_form.php">🔐 Iniciar Sesión</a></li> <!-- Página de login -->
+      <li><a href="../public/registro.php">📝 Registrarse</a></li>       <!-- Página de registro -->
     </ul>
   </div>
 
+  <!-- Pie de página con derechos de autor dinámicos usando la fecha actual -->
   <footer>
     <p>&copy; <?= date("Y") ?> Sistema de Hoteles | Todos los derechos reservados</p>
   </footer>
 </body>
 </html>
->>>>>>> 2a2dab7aa3641be1241f41b53817ba3515ed5afd
