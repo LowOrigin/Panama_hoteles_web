@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-07-2025 a las 21:17:25
+-- Tiempo de generación: 25-07-2025 a las 00:15:27
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -32,6 +32,17 @@ CREATE TABLE `categorias` (
   `nombre` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nombre`) VALUES
+(1, '1 estrella'),
+(2, '2 estrellas'),
+(3, '3 estrellas'),
+(4, '4 estrellas'),
+(5, '5 estrellas');
+
 -- --------------------------------------------------------
 
 --
@@ -44,6 +55,22 @@ CREATE TABLE `habitaciones` (
   `tipo` varchar(100) NOT NULL,
   `capacidad` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `habitaciones`
+--
+
+INSERT INTO `habitaciones` (`id`, `hotel_id`, `tipo`, `capacidad`) VALUES
+(1, 1, 'Suite frente al mar', 4),
+(2, 1, 'Habitación doble', 2),
+(3, 2, 'Cabaña familiar', 5),
+(4, 2, 'Habitación individual', 1),
+(5, 3, 'Habitación ejecutiva', 2),
+(6, 3, 'Suite presidencial', 3),
+(7, 4, 'Habitación matrimonial', 2),
+(8, 4, 'Habitación colonial', 3),
+(9, 5, 'Suite cafetera', 4),
+(10, 5, 'Habitación estándar', 2);
 
 -- --------------------------------------------------------
 
@@ -60,6 +87,17 @@ CREATE TABLE `hoteles` (
   `imagen` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `hoteles`
+--
+
+INSERT INTO `hoteles` (`id`, `nombre`, `descripcion`, `direccion`, `categoria_id`, `imagen`) VALUES
+(1, 'Hotel Paraíso del Mar', 'Frente a la playa con acceso privado y spa.', 'Cartagena, Colombia', 5, 'paraiso.jpg'),
+(2, 'Hotel Sierra Verde', 'En medio de la montaña, ideal para el ecoturismo.', 'Boquete, Panamá', 4, 'sierra_verde.jpg'),
+(3, 'Hotel Ciudad Central', 'En el centro financiero. Perfecto para negocios.', 'Ciudad de Panamá, Panamá', 4, 'central.jpg'),
+(4, 'Hotel Colonial', 'Casa colonial restaurada con encanto.', 'Antigua Guatemala, Guatemala', 3, 'colonial.jpg'),
+(5, 'Hotel Ruta del Café', 'Ubicado en una finca cafetera tradicional.', 'Matagalpa, Nicaragua', 4, 'ruta_cafe.jpg');
+
 -- --------------------------------------------------------
 
 --
@@ -72,6 +110,29 @@ CREATE TABLE `hotel_instalacion` (
   `instalacion_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `hotel_instalacion`
+--
+
+INSERT INTO `hotel_instalacion` (`id`, `hotel_id`, `instalacion_id`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 1, 5),
+(5, 1, 7),
+(6, 2, 1),
+(7, 2, 6),
+(8, 2, 5),
+(9, 3, 1),
+(10, 3, 4),
+(11, 3, 5),
+(12, 3, 8),
+(13, 4, 1),
+(14, 4, 5),
+(15, 5, 1),
+(16, 5, 5),
+(17, 5, 6);
+
 -- --------------------------------------------------------
 
 --
@@ -82,6 +143,20 @@ CREATE TABLE `instalaciones` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `instalaciones`
+--
+
+INSERT INTO `instalaciones` (`id`, `nombre`) VALUES
+(1, 'WiFi'),
+(2, 'Piscina'),
+(3, 'Spa'),
+(4, 'Gimnasio'),
+(5, 'Restaurante'),
+(6, 'Estacionamiento'),
+(7, 'Playa privada'),
+(8, 'Centro de negocios');
 
 -- --------------------------------------------------------
 
@@ -118,6 +193,13 @@ CREATE TABLE `usuarios` (
   `activo` tinyint(1) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `usuario`, `correo`, `clave`, `sexo`, `rol`, `activo`, `created_at`) VALUES
+(1, 'Jhon', 'Carlo', 'getsexo', 'sexoso@gmail.com', '$2y$10$WnuekKza34qMow.NsvrXGeV7XkdoKHQ7O0OG3RpteGTvxMS.0Wb9e', 'M', 'cliente', 1, '2025-07-24 20:26:46');
 
 --
 -- Índices para tablas volcadas
@@ -182,31 +264,31 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `habitaciones`
 --
 ALTER TABLE `habitaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `hoteles`
 --
 ALTER TABLE `hoteles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `hotel_instalacion`
 --
 ALTER TABLE `hotel_instalacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `instalaciones`
 --
 ALTER TABLE `instalaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `reservas`
@@ -218,7 +300,7 @@ ALTER TABLE `reservas`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
