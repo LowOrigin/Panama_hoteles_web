@@ -11,18 +11,32 @@ require_once("../clases/SanitizarEntrada.php");
 $db = new mod_db();
 $conexion = $db->getConexion();
 
-// Manejar acciones (activar/desactivar)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['accion'])) {
+// Activar o desactivar usuarios
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['accion'])) {
     $id = (int) $_POST['id'];
-    $accion = $_POST['accion'] === 'desactivar' ? 0 : 1;
+    $accion = $_POST['accion'];
+    $idActual = $_SESSION['id'] ?? 0;
+
+    if ($id === $idActual && $accion === 'desactivar') {
+        // No permitir desactivarse a sí mismo
+        echo "<script>alert('No puedes desactivarte a ti mismo.'); window.location.href='gestionar_usuarios.php';</script>";
+        exit;
+    }
+
+    $activo = $accion === 'desactivar' ? 0 : 1;
     $stmt = $conexion->prepare("UPDATE usuarios SET activo = :activo WHERE id = :id");
-    $stmt->execute(['activo' => $accion, 'id' => $id]);
+    $stmt->execute(['activo' => $activo, 'id' => $id]);
 }
 
-// Obtener usuarios que no sean clientes
-$stmt = $conexion->prepare("SELECT id, nombre, apellido, usuario, correo, rol, activo FROM usuarios WHERE rol IN ('admin', 'editor')");
-$stmt->execute();
-$usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Obtener usuarios organizados por rol
+$roles = ['admin', 'editor', 'cliente'];
+$usuariosPorRol = [];
+
+foreach ($roles as $rol) {
+    $stmt = $conexion->prepare("SELECT id, nombre, apellido, usuario, correo, rol, activo FROM usuarios WHERE rol = :rol");
+    $stmt->execute(['rol' => $rol]);
+    $usuariosPorRol[$rol] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,45 +44,62 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
   <meta charset="UTF-8">
   <title>Gestionar Usuarios</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="../css/estilosGenerales.css">
 </head>
 <body>
   <div class="admin-panel">
-    <h1>Gestión de Usuarios (Admin/Editor)</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre completo</th>
-          <th>Usuario</th>
-          <th>Correo</th>
-          <th>Rol</th>
-          <th>Estado</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($usuarios as $user): ?>
-          <tr>
-            <td><?= $user['id'] ?></td>
-            <td><?= htmlspecialchars($user['nombre'] . ' ' . $user['apellido']) ?></td>
-            <td><?= htmlspecialchars($user['usuario']) ?></td>
-            <td><?= htmlspecialchars($user['correo']) ?></td>
-            <td><?= $user['rol'] ?></td>
-            <td><?= $user['activo'] ? 'Activo' : 'Inactivo' ?></td>
-            <td>
-              <form method="POST" style="display:inline;">
-                <input type="hidden" name="id" value="<?= $user['id'] ?>">
-                <input type="hidden" name="accion" value="<?= $user['activo'] ? 'desactivar' : 'activar' ?>">
-                <button class="btn-action" type="submit"><?= $user['activo'] ? 'Desactivar' : 'Activar' ?></button>
-              </form>
-            </td>
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-    <br>
-    <a class="btn-volver" href="../admin/dashboard.php">← Volver al Panel</a>
+    <h1>Gestión de Usuarios</h1>
+    <a class="btn-volver" href="dashboard.php">← Volver al Panel</a>
+
+    <?php foreach ($usuariosPorRol as $rol => $usuarios): ?>
+      <section class="usuario-section">
+        <h2><?= ucfirst($rol) ?><?= $rol === 'cliente' ? 's' : 'es' ?></h2>
+        <?php if (empty($usuarios)): ?>
+          <p>No hay usuarios con rol <?= $rol ?>.</p>
+        <?php else: ?>
+          <div class="usuarios-grid">
+            <?php foreach ($usuarios as $user): ?>
+              <div class="usuario-card <?= $user['activo'] ? 'activo' : 'inactivo' ?>">
+                <h3><?= htmlspecialchars($user['nombre'] . ' ' . $user['apellido']) ?></h3>
+                <p><strong>Usuario:</strong> <?= htmlspecialchars($user['usuario']) ?></p>
+                <p><strong>Correo:</strong> <?= htmlspecialchars($user['correo']) ?></p>
+                <p><strong>Rol:</strong> <?= $user['rol'] ?></p>
+                <p><strong>Estado:</strong> <?= $user['activo'] ? 'Activo' : 'Inactivo' ?></p>
+                <form method="POST">
+                  <input type="hidden" name="id" value="<?= $user['id'] ?>">
+                  <input type="hidden" name="accion" value="<?= $user['activo'] ? 'desactivar' : 'activar' ?>">
+                <?php
+$isSelf = $user['id'] == ($_SESSION['id'] ?? 0) && $user['activo'];
+?>
+<button 
+  type="<?= $isSelf ? 'button' : 'submit' ?>" 
+  class="btn-estado <?= $isSelf ? 'btn-disabled' : '' ?>" 
+  <?= $isSelf ? 'data-self="true"' : '' ?>>
+  <?= $user['activo'] ? 'Desactivar' : 'Activar' ?>
+</button>
+                </form>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+      </section>
+    <?php endforeach; ?>
   </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('button[data-self="true"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Acción no permitida',
+          text: 'No puedes desactivarte a ti mismo.',
+          confirmButtonText: 'Entendido'
+        });
+      });
+    });
+  });
+</script>
 </body>
 </html>

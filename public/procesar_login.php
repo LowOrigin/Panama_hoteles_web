@@ -19,9 +19,18 @@ if ($login->logger()) {
     $login->autenticar();
     if ($login->loginExitoso()) {
         $usuarioBD = $db->log($login->getUsuario());
+
+        // Verificamos si está activo
+        if ((int) $usuarioBD->activo !== 1) {
+            header("Location: ../formularios/login_form.php?error=Este usuario ha sido desactivado por el administrador.");
+            exit;
+        }
+
+        // Guardar datos en sesión
         $_SESSION['usuario_id'] = $usuarioBD->id;
         $_SESSION['usuario'] = $usuarioBD->usuario;
         $_SESSION['rol'] = $usuarioBD->rol;
+        $_SESSION['id'] = $usuarioBD->id; // importante para evitar desactivarse a sí mismo
 
         // Redirige según el rol
         if ($usuarioBD->rol === 'admin') {
