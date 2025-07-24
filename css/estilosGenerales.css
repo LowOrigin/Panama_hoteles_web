@@ -1,0 +1,132 @@
+/* estilosGenerales.css - Tema oscuro elegante para sistema web de hoteles */
+
+:root {
+  --bg-dark: #121212;
+  --bg-light: #1e1e1e;
+  --accent: #00b894;
+  --accent-hover: #009e7c;
+  --text-light: #eaeaea;
+  --text-muted: #bbbbbb;
+  --border-dark: #2c2c2c;
+  --error: #ff6b6b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Contenedor central de tarjetas, formularios o secciones */
+.card-container {
+  background-color: var(--bg-light);
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 600px;
+  margin: 40px auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+}
+
+/* Títulos */
+h1, h2, h3 {
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Estilo general para inputs y selects */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-dark);
+  border-radius: 6px;
+  background-color: #151515;
+  color: var(--text-light);
+  font-size: 15px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background-color: #1f1f1f;
+}
+
+/* Botones principales */
+button {
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Enlaces */
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Tablas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-dark);
+  text-align: left;
+}
+
+table th {
+  background-color: #1c1c1c;
+  color: var(--text-light);
+}
+
+table tr:hover {
+  background-color: #222;
+}
+
+/* Mensajes de error */
+.error {
+  color: var(--error);
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Footer general */
+footer {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}

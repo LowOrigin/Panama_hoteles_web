@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Iniciar Sesión</title>
-  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
   <div class="card-container">
@@ -15,7 +15,7 @@
       <button type="submit">Ingresar</button>
     </form>
     <p>¿No tienes cuenta? <a href="formulario_registro.php">Regístrate</a></p>
-    <?php if (isset($_GET['error'])) echo '<p style="color:red">' . htmlspecialchars($_GET['error']) . '</p>'; ?>
+   <?php if (isset($_GET['error'])) echo '<p class="error">' . htmlspecialchars($_GET['error']) . '</p>'; ?>
   </div>
 </body>
 </html>

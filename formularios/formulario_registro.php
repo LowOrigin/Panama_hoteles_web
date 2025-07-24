@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Registro de Cliente</title>
-  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/estilosGenerales.css">
 </head>
 <body>
   <div class="card-container">

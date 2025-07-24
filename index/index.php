@@ -1,27 +1,35 @@
 <?php
 session_start();
+$usuario = $_SESSION['usuario'] ?? null;
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio - Sistema de Hoteles</title>
+  <link rel="stylesheet" href="../css/estilosGenerales.css">
+</head>
+<body>
+  <div class="card-container">
+    <h1>Sistema de Hoteles</h1>
+    <h2>
+      <?php if ($usuario): ?>
+        Bienvenido, <?= htmlspecialchars($usuario); ?>
+      <?php else: ?>
+        Bienvenido a nuestro sitio de hoteles
+      <?php endif; ?>
+    </h2>
 
-class IndexController
-{
-    public function handleRequest()
-    {
-        // Mensaje de bienvenida
-        if (isset($_SESSION['usuario'])) {
-            echo "<h2>Bienvenido, " . htmlspecialchars($_SESSION['usuario']) . "</h2>";
-        } else {
-            echo "<h2>Bienvenido a nuestro sitio de hoteles</h2>";
-        }
+    <ul style="margin-top: 30px; list-style: none; padding: 0;">
+      <li><a href="../public/ver_hotel.php">🏨 Ver Hoteles</a></li>
+      <li><a href="../public/reservar.php">📅 Reservar</a></li>
+      <li><a href="../formularios/login_form.php">🔐 Iniciar Sesión</a></li>
+      <li><a href="../public/registro.php">📝 Registrarse</a></li>
+    </ul>
+  </div>
 
-        // Menú principal con enlaces relativos saliendo de /index hacia /public
-        echo "<ul>";
-        echo "<li><a href='../public/ver_hotel.php'>Ver Hoteles</a></li>";
-        echo "<li><a href='../public/reservar.php'>Reservar</a></li>";
-        echo "<li><a href='../formularios/login_form.php'>Iniciar Sesión</a></li>";
-        echo "<li><a href='../public/registro.php'>Registrarse</a></li>";
-        echo "</ul>";
-    }
-}
-
-// Ejecutar controlador
-$index = new IndexController();
-$index->handleRequest();
+  <footer>
+    <p>&copy; <?= date("Y") ?> Sistema de Hoteles | Todos los derechos reservados</p>
+  </footer>
+</body>
+</html>
