@@ -27,7 +27,7 @@ if (isset($_GET['id'])) {
         echo "<h2>" . htmlspecialchars($hotel['nombre']) . "</h2>";
 
         // Mostrar la ubicación (se asume que existe la columna 'ubicacion' en la tabla, aunque en la base de datos que mostraste está 'direccion')
-        echo "<p><strong>Ubicación:</strong> " . htmlspecialchars($hotel['ubicacion']) . "</p>";
+        echo "<p><strong>Ubicación:</strong> " . htmlspecialchars($hotel['direccion']) . "</p>";
 
         // Mostrar la descripción del hotel
         echo "<p><strong>Descripción:</strong> " . htmlspecialchars($hotel['descripcion']) . "</p>";
