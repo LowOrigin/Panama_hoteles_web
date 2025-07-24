@@ -156,3 +156,36 @@ body {
     margin-top: 0.5rem;
   }
 }
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+table th, table td {
+    border: 1px solid #aaa;
+    padding: 8px 16px;
+    text-align: left;
+}
+th {
+    background: #3a7fae;
+    color: #fff;
+}
+form {
+    margin: 20px auto;
+    width: 300px;
+    display: flex;
+    gap: 10px;
+}
+input[type="text"], button {
+    padding: 6px 10px;
+    font-size: 16px;
+}
+button {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+button:hover {
+    background: #388E3C;
+}
