@@ -32,7 +32,7 @@ $usuario = $_SESSION['usuario'] ?? null;
       <li><a href="../public/ver_hotel.php">🏨 Ver Hoteles</a></li>       <!-- Página para ver hoteles disponibles -->
       <li><a href="../public/reservar.php">📅 Reservar</a></li>          <!-- Página para hacer una reserva -->
       <li><a href="../formularios/login_form.php">🔐 Iniciar Sesión</a></li> <!-- Página de login -->
-      <li><a href="../public/registro.php">📝 Registrarse</a></li>       <!-- Página de registro -->
+      <li><a href="../formularios/formulario_registro.php">📝 Registrarse</a></li>       <!-- Página de registro -->
     </ul>
   </div>
 
