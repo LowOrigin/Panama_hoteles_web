@@ -1,90 +1,90 @@
-/* login.css – Estilo específico para la página de login */
+/* login.css - Versión oscura y elegante para hoteles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 body {
-  background-color: #f9f9f9;
+  background: linear-gradient(to right, #0c0c0c, #1a1a1a, #2a2a2a);
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
 }
 
-.login-container {
-  background: white;
-  border-radius: 8px;
-  padding: 2rem 2.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+.card-container {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 40px 45px;
+  border-radius: 14px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
   width: 100%;
+  max-width: 420px;
+  color: #f5f5f5;
 }
 
-.login-container h2 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #1a73e8;
+h1 {
   text-align: center;
+  margin-bottom: 25px;
+  font-size: 30px;
+  color: #ffffff;
 }
 
-.login-container label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
-.login-container input {
+form input {
   width: 100%;
-  padding: 0.6rem;
-  margin-bottom: 1.2rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.login-container button {
-  width: 100%;
-  padding: 0.7rem;
-  background-color: #1a73e8;
+  padding: 12px 14px;
+  margin: 12px 0;
+  border-radius: 6px;
   border: none;
-  color: white;
-  font-size: 1rem;
-  border-radius: 4px;
+  background-color: #151515;
+  color: #eaeaea;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+form input:focus {
+  outline: none;
+  background-color: #222222;
+}
+
+button {
+  width: 100%;
+  background-color: #1f8a70;
+  color: #fff;
+  border: none;
+  padding: 13px;
+  font-size: 16px;
+  border-radius: 6px;
   cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
 }
 
-.login-container button:hover {
-  background-color: #125ab6;
+button:hover {
+  background-color: #136c54;
 }
 
-.mensaje-error {
-  color: red;
+p {
+  margin-top: 20px;
   text-align: center;
-  margin-top: 1rem;
+  font-size: 14px;
 }
 
-.registro-link {
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.registro-link a {
-  color: #1a73e8;
+a {
+  color: #00b894;
   text-decoration: none;
 }
 
-.registro-link a:hover {
+a:hover {
   text-decoration: underline;
 }
 
-.btn-volver {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  text-decoration: none;
-  color: #1a73e8;
-  font-weight: bold;
-  font-size: 0.95rem;
-}
-
-.btn-volver:hover {
-  text-decoration: underline;
+.error {
+  color: #ff7675;
+  font-size: 14px;
+  margin-top: 12px;
+  text-align: center;
 }
