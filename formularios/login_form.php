@@ -8,7 +8,7 @@
 <body>
   <div class="card-container">
     <h1>Login</h1>
-    <form action="../public/index.php" method="POST">
+    <form action="../public/procesar_login.php" method="POST">
       <input type="text" name="usuario" placeholder="Usuario" required />
       <input type="password" name="contrasena" placeholder="Contraseña" required />
       <input type="hidden" name="tolog" value="true" />

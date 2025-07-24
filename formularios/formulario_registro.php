@@ -13,7 +13,7 @@
       <input type="text" name="apellido" placeholder="Apellido" required>
       <input type="text" name="usuario" placeholder="Usuario" required>
       <input type="email" name="correo" placeholder="Correo electrónico" required>
-      <input type="password" name="pasword" placeholder="Contraseña" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
       <select name="sexo" required>
         <option value="">Selecciona sexo</option>
         <option value="M">Masculino</option>
