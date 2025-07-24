@@ -12,7 +12,7 @@ $nombre   = SanitizarEntrada::limpiarCadena($_POST['nombre'] ?? '');
 $apellido = SanitizarEntrada::limpiarCadena($_POST['apellido'] ?? '');
 $usuario  = SanitizarEntrada::limpiarCadena($_POST['usuario'] ?? '');
 $correo   = filter_var($_POST['correo'] ?? '', FILTER_VALIDATE_EMAIL);
-$clave    = SanitizarEntrada::limpiarCadena($_POST['pasword'] ?? '');
+$clave    = SanitizarEntrada::limpiarCadena($_POST['password'] ?? '');
 $sexo     = SanitizarEntrada::limpiarCadena($_POST['sexo'] ?? '');
 
 if (!$correo) {
