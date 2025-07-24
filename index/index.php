@@ -16,7 +16,7 @@ class IndexController
         echo "<ul>";
         echo "<li><a href='../public/ver_hotel.php'>Ver Hoteles</a></li>";
         echo "<li><a href='../public/reservar.php'>Reservar</a></li>";
-        echo "<li><a href='../public/login.php'>Iniciar Sesión</a></li>";
+        echo "<li><a href='../formularios/login_form.php'>Iniciar Sesión</a></li>";
         echo "<li><a href='../public/registro.php'>Registrarse</a></li>";
         echo "</ul>";
     }
