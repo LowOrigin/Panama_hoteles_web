@@ -265,6 +265,25 @@ button {
 button:hover {
   background: #0e51b2;
   transform: scale(1.04);
+<<<<<<< HEAD
+=======
+}
+
+.alert, .msg-exito, .msg-error {
+  margin: 14px auto;
+  max-width: 440px;
+  padding: 12px 18px;
+  border-radius: 7px;
+  font-size: 1rem;
+  text-align: center;
+}
+.msg-exito { background: #e8f5e9; color: #388e3c; border: 1px solid #c1e2c7; }
+.msg-error { background: #ffebee; color: #d32f2f; border: 1px solid #f8bbbc; }
+
+input[type="text"]:disabled, input[type="email"]:disabled {
+  background: #f0f0f0;
+  color: #aaa;
+>>>>>>> bfd077da5416667eaadaebd67478a27082e07be4
 }
 
 .alert, .msg-exito, .msg-error {
