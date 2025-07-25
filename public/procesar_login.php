@@ -36,7 +36,7 @@ if ($login->logger()) {
         if ($usuarioBD->rol === 'admin') {
             header("Location: ../admin/dashboard.php");
         } elseif ($usuarioBD->rol === 'editor') {
-            header("Location: ../editor/mis_hoteles.php");
+            header("Location: ../editor/crear_hotel_editor.php");
         } else {
             header("Location: ../index/index.php");
         }
