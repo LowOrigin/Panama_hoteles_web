@@ -91,18 +91,22 @@ if (isset($_GET['id'])) {
             break;
     }
 
+    // Obtener imagen desde campo 'imagen'
+    $nombreImagen = $hotel['imagen'] ?? 'default.jpg';
+    $imagenHotel = "../img_hoteles/" . $nombreImagen;
+
+    // Habitaciones
     $stmtHabitaciones = $conn->prepare("SELECT * FROM habitaciones WHERE hotel_id = :hotel_id");
     $stmtHabitaciones->execute([':hotel_id' => $hotel_id]);
     $habitaciones = $stmtHabitaciones->fetchAll(PDO::FETCH_ASSOC);
-
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title><?= isset($hotel) ? htmlspecialchars($hotel['nombre']) : 'Hoteles en Panamá' ?></title>
+    <link rel="stylesheet" href="../css/estilosHoteles.css">
     <link rel="stylesheet" href="../css/estilosDetalleHotel.css">
     <script>
         function mostrarFormularioReserva() {
@@ -112,36 +116,17 @@ if (isset($_GET['id'])) {
     </script>
 </head>
 <body>
+    <div style="margin: 20px;">
+        <a href="../index/index.php" class="btn-volver">← Volver a la lista de hoteles</a>
+    </div>
 
 <?php if (!isset($hotel)): ?>
     <h2>Hoteles disponibles en Panamá</h2>
     <div class="hotel-grid">
         <?php
-        $stmt = $conn->query("SELECT id, nombre, direccion FROM hoteles");
+        $stmt = $conn->query("SELECT id, nombre, direccion FROM hoteles WHERE aprobado = 1");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
-            switch ($row['id']) {
-                case 1:
-                    $imagen = "../img/paraiso_del_mar.jpg";
-                    break;
-                case 2:
-                    $imagen = "../img/sierra verde.jpg";
-                    break;
-                case 3:
-                    $imagen = "../img/ciudad_central.jpg";
-                    break;
-                case 4:
-                    $imagen = "../img/colonial.jpeg";
-                    break;
-                case 5:
-                    $imagen = "../img/cafe.jpg";
-                    break;
-                case 7:
-                    $imagen = "../img/esencia.jpg";
-                    break;
-                default:
-                    $imagen = "../img/7palabras.jpg";
-                    break;
-            }
+            $imagen = "../img_hoteles/" . ($row['imagen'] ?? 'default.jpg');
         ?>
             <a class="hotel-card" href="ver_hotel.php?id=<?= intval($row['id']) ?>">
                 <img src="<?= $imagen ?>" alt="Imagen del hotel" style="width:100%; height:200px; object-fit:cover; border-radius: 10px;">
@@ -154,9 +139,7 @@ if (isset($_GET['id'])) {
     <h1><?= htmlspecialchars($hotel['nombre']) ?></h1>
 
     <!-- Imagen del hotel -->
-    <img src="<?= htmlspecialchars($imagenHotel) ?>" 
-         alt="Imagen del hotel" 
-         style="max-width:600px; width:100%; border-radius: 10px; margin-bottom: 20px; box-shadow:0 2px 12px rgba(30,60,120,0.10);">
+    <img src="<?= htmlspecialchars($imagenHotel) ?>" alt="Imagen del hotel" style="max-width:600px; width:100%; border-radius: 10px; margin-bottom: 20px;">
 
     <p><strong>Ubicación:</strong> <?= htmlspecialchars($hotel['direccion']) ?></p>
     <p><?= htmlspecialchars($hotel['descripcion']) ?></p>
@@ -214,10 +197,8 @@ if (isset($_GET['id'])) {
         <p><em>Debes iniciar sesión para poder reservar.</em></p>
     <?php endif; ?>
 
-    <p><a href="../index/index.php">← Volver a la lista de hoteles</a></p>
 <?php endif; ?>
-
-<!-- Footer -->
+<br><br>
 <?php include("../index/footer.php"); ?>
 
 </body>

@@ -82,3 +82,20 @@ button#btnMostrarReserva {
     border-radius: 6px;
     cursor: pointer;
 }
+
+.btn-volver {
+    color: #4a148c;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 16px;
+    display: inline-block;
+    border-radius: 6px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s;
+}
+
+.btn-volver:hover {
+    background-color: #e0e0e0;
+    text-decoration: underline;
+}
