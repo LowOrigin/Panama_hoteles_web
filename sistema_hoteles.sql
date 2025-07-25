@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-07-2025 a las 00:15:27
+-- Tiempo de generación: 25-07-2025 a las 08:09:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -70,7 +70,11 @@ INSERT INTO `habitaciones` (`id`, `hotel_id`, `tipo`, `capacidad`) VALUES
 (7, 4, 'Habitación matrimonial', 2),
 (8, 4, 'Habitación colonial', 3),
 (9, 5, 'Suite cafetera', 4),
-(10, 5, 'Habitación estándar', 2);
+(10, 5, 'Habitación estándar', 2),
+(11, 6, '1', 2),
+(12, 7, '1', 2),
+(13, 8, '1', 2),
+(14, 9, '1', 2);
 
 -- --------------------------------------------------------
 
@@ -96,7 +100,11 @@ INSERT INTO `hoteles` (`id`, `nombre`, `descripcion`, `direccion`, `categoria_id
 (2, 'Hotel Sierra Verde', 'En medio de la montaña, ideal para el ecoturismo.', 'Boquete, Panamá', 4, 'sierra_verde.jpg'),
 (3, 'Hotel Ciudad Central', 'En el centro financiero. Perfecto para negocios.', 'Ciudad de Panamá, Panamá', 4, 'central.jpg'),
 (4, 'Hotel Colonial', 'Casa colonial restaurada con encanto.', 'Antigua Guatemala, Guatemala', 3, 'colonial.jpg'),
-(5, 'Hotel Ruta del Café', 'Ubicado en una finca cafetera tradicional.', 'Matagalpa, Nicaragua', 4, 'ruta_cafe.jpg');
+(5, 'Hotel Ruta del Café', 'Ubicado en una finca cafetera tradicional.', 'Matagalpa, Nicaragua', 4, 'ruta_cafe.jpg'),
+(6, 'Hotel 7 palabras', 'Siento la verdadera esencia', 'Sapporo, Japón', 5, '68830a636f785_esencia.jpg'),
+(7, 'Hotel 7 palabras', 'Siento la verdadera esencia', 'Sapporo, Japón', 5, '68830e7ba2d14_esencia.jpg'),
+(8, 'Hotel 7 palabras', 'Siento la verdadera esencia', 'Sapporo, Japón', 5, '68830f27772ff_esencia.jpg'),
+(9, 'Hotel 7 palabras', 'Siento la verdadera esencia', 'Sapporo, Japón', 5, '6883100f4ad74.jpg');
 
 -- --------------------------------------------------------
 
@@ -131,7 +139,39 @@ INSERT INTO `hotel_instalacion` (`id`, `hotel_id`, `instalacion_id`) VALUES
 (14, 4, 5),
 (15, 5, 1),
 (16, 5, 5),
-(17, 5, 6);
+(17, 5, 6),
+(18, 6, 1),
+(19, 6, 2),
+(20, 6, 3),
+(21, 6, 4),
+(22, 6, 5),
+(23, 6, 6),
+(24, 6, 7),
+(25, 6, 8),
+(26, 7, 1),
+(27, 7, 2),
+(28, 7, 3),
+(29, 7, 4),
+(30, 7, 5),
+(31, 7, 6),
+(32, 7, 7),
+(33, 7, 8),
+(34, 8, 1),
+(35, 8, 2),
+(36, 8, 3),
+(37, 8, 4),
+(38, 8, 5),
+(39, 8, 6),
+(40, 8, 7),
+(41, 8, 8),
+(42, 9, 1),
+(43, 9, 2),
+(44, 9, 3),
+(45, 9, 4),
+(46, 9, 5),
+(47, 9, 6),
+(48, 9, 7),
+(49, 9, 8);
 
 -- --------------------------------------------------------
 
@@ -175,6 +215,14 @@ CREATE TABLE `reservas` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `reservas`
+--
+
+INSERT INTO `reservas` (`id`, `usuario_id`, `hotel_id`, `habitacion_id`, `personas`, `fecha_entrada`, `fecha_salida`, `created_at`) VALUES
+(7, 1, 1, 1, 1, '2025-07-24', '2025-07-30', '2025-07-24 23:51:58'),
+(8, 1, 1, 2, 1, '2025-07-25', '2025-07-28', '2025-07-25 00:00:32');
+
 -- --------------------------------------------------------
 
 --
@@ -199,7 +247,10 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `usuario`, `correo`, `clave`, `sexo`, `rol`, `activo`, `created_at`) VALUES
-(1, 'Jhon', 'Carlo', 'getsexo', 'sexoso@gmail.com', '$2y$10$WnuekKza34qMow.NsvrXGeV7XkdoKHQ7O0OG3RpteGTvxMS.0Wb9e', 'M', 'cliente', 1, '2025-07-24 20:26:46');
+(1, 'Jhon', 'Carlo', 'getsexo', 'sexoso@gmail.com', '$2y$10$WnuekKza34qMow.NsvrXGeV7XkdoKHQ7O0OG3RpteGTvxMS.0Wb9e', 'M', 'cliente', 1, '2025-07-24 20:26:46'),
+(2, 'SuperVegeta', 'per', 'YaVeteDelCiber', 'soysupervegeta@gmail.com', '$2y$10$xeTFNvOJNrique1zsg4ziesC9/awl7wOO6WNuyhppLYeosc8wnQWm', 'M', 'admin', 1, '2025-07-25 00:27:43'),
+(3, 'Erick', 'Ospina Arturo', 'yayo', 'erick04ospinaherrera@gmail.com', '$2y$10$xeTFNvOJNrique1zsg4ziesC9/awl7wOO6WNuyhppLYeosc8wnQWm', 'M', 'cliente', 1, '2025-07-25 00:40:10'),
+(4, 'Jhon', 'Wick', 'ElJon', 'ElJon@gmail.com', '$2y$10$oVrl5zZ9FqJ2ii6Fs/GcDOWusZoS6xvJSXGwmFsEPhDOA8HHBUokG', 'M', 'editor', 1, '2025-07-25 04:34:53');
 
 --
 -- Índices para tablas volcadas
@@ -270,19 +321,19 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `habitaciones`
 --
 ALTER TABLE `habitaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `hoteles`
 --
 ALTER TABLE `hoteles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `hotel_instalacion`
 --
 ALTER TABLE `hotel_instalacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `instalaciones`
@@ -294,13 +345,13 @@ ALTER TABLE `instalaciones`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
