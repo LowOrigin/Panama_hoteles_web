@@ -66,6 +66,30 @@ if (isset($_GET['id'])) {
         echo "<p>Hotel no encontrado.</p><p><a href='ver_hotel.php'>← Volver</a></p>";
         exit;
     }
+    // Determinar la imagen del hotel según su ID
+    switch ($hotel['id']) {
+        case 1:
+            $imagenHotel = "../img/paraiso_del_mar.jpg";
+            break;
+        case 2:
+            $imagenHotel = "../img/sierra verde.jpg";
+            break;
+        case 3:
+            $imagenHotel = "../img/ciudad_central.jpg";
+            break;
+        case 4:
+            $imagenHotel = "../img/colonial.jpeg";
+            break;
+        case 5:
+            $imagenHotel = "../img/cafe.jpg";
+            break;
+        case 7:
+            $imagenHotel = "../img/esencia.jpg";
+            break;
+        default:
+            $imagenHotel = "../img/7palabras.jpg";
+            break;
+    }
 
     // Obtener imagen desde campo 'imagen'
     $nombreImagen = $hotel['imagen'] ?? 'default.jpg';
@@ -176,5 +200,6 @@ if (isset($_GET['id'])) {
 <?php endif; ?>
 <br><br>
 <?php include("../index/footer.php"); ?>
+
 </body>
 </html>
