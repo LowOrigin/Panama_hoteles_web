@@ -110,6 +110,7 @@ $nombre = htmlspecialchars($_SESSION['usuario']);
       </div>
     </a>
   </div>
-
+<!-- Footer -->
+<?php include("../index/footer.php"); ?>
 </body>
 </html>

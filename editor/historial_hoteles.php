@@ -130,6 +130,7 @@ $hoteles = $stmt->get_result();
     </tbody>
   </table>
 </div>
-
+<!-- Footer -->
+<?php include("../index/footer.php"); ?>
 </body>
 </html>

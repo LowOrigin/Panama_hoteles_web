@@ -192,5 +192,7 @@ function agregarHabitacion() {
   document.getElementById('habitaciones').appendChild(div);
 }
 </script>
+<!-- Footer -->
+<?php include("../index/footer.php"); ?>
 </body>
 </html>

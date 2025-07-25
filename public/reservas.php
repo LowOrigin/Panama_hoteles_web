@@ -40,8 +40,19 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Mis Reservas</title>
+    <!-- Enlace al archivo CSS general -->
+    <link rel="stylesheet" href="../css/estilosGenerales.css">
 </head>
+  <!-- Navbar debajo del título -->
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="../index/index.php">🏠 Inicio</a>
+      <a href="nosotros.php">📄 Nosotros</a>
+      <a href="../public/ver_hotel.php">🏨 Ver Hoteles</a>
+      <a href="../public/reservas.php">📅 Reservas</a>
+    </div>
 <body>
     <h1>Mis Reservas</h1>
 
@@ -62,5 +73,7 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
+    <!-- Footer -->
+<?php include("../index/footer.php"); ?>
 </body>
 </html>
