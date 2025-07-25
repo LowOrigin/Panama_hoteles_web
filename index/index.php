@@ -84,28 +84,28 @@ $usuario = $_SESSION['usuario'] ?? null;
     }
 
     .dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  background-color: #111; /* fondo negro */
-  min-width: 140px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-  z-index: 1;
-  border-radius: 6px;
-  overflow: hidden;
-}
+       display: none;
+       position: absolute;
+       right: 0;
+       background-color: #111; /* fondo negro */
+       min-width: 140px;
+       box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+       z-index: 1;
+       border-radius: 6px;
+       overflow: hidden;
+    }
 
-.dropdown a {
-  color: white; /* letras blancas */
-  padding: 12px 16px;
-  display: block;
-  text-decoration: none;
-  font-weight: bold;
-}
+    .dropdown a {
+       color: white; /* letras blancas */
+       padding: 12px 16px;
+       display: block;
+       text-decoration: none;
+       font-weight: bold;
+    }
 
-.dropdown a:hover {
-  background-color: #333; /* gris oscuro al pasar el mouse */
-}
+    .dropdown a:hover {
+      background-color: #333; /* gris oscuro al pasar el mouse */
+    }
 
 
     .user-menu:hover .dropdown {
