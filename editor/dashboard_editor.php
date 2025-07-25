@@ -96,13 +96,6 @@ $nombre = htmlspecialchars($_SESSION['usuario']);
       </div>
     </a>
 
-    <a href="historial_hoteles.php" class="card-link">
-      <div class="editor-card">
-        <span>📋</span>
-        <h3>Ver Historial de Hoteles</h3>
-      </div>
-    </a>
-
     <a href="../public/logout.php" class="card-link">
       <div class="editor-card">
         <span>🚪</span>
@@ -111,6 +104,5 @@ $nombre = htmlspecialchars($_SESSION['usuario']);
     </a>
   </div>
 <!-- Footer -->
-<?php include("../index/footer.php"); ?>
 </body>
 </html>

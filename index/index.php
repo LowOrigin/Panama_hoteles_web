@@ -1,14 +1,9 @@
 <?php
 session_start();
-require_once '../clases/mod_db.php';
 $usuario = $_SESSION['usuario'] ?? null;
 
-$db = new mod_db();
-$conn = $db->getConexion();
-
-// Obtener todos los hoteles
-$stmt = $conn->query("SELECT id, nombre, direccion FROM hoteles");
-$hoteles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Lógica de conexión y hoteles filtrados
+require_once 'filtrar_hoteles.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -92,23 +87,23 @@ $hoteles = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     .dropdown {
-       display: none;
-       position: absolute;
-       right: 0;
-       background-color: #111;
-       min-width: 140px;
-       box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-       z-index: 1;
-       border-radius: 6px;
-       overflow: hidden;
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #111;
+      min-width: 140px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      z-index: 1;
+      border-radius: 6px;
+      overflow: hidden;
     }
 
     .dropdown a {
-       color: white;
-       padding: 12px 16px;
-       display: block;
-       text-decoration: none;
-       font-weight: bold;
+      color: white;
+      padding: 12px 16px;
+      display: block;
+      text-decoration: none;
+      font-weight: bold;
     }
 
     .dropdown a:hover {
@@ -121,8 +116,13 @@ $hoteles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     .card-container {
       max-width: 600px;
-      margin: 40px auto;
+      margin: 40px auto 20px;
       text-align: center;
+    }
+
+    .filter-container {
+      text-align: center;
+      margin-bottom: 30px;
     }
 
     .hotel-grid {
@@ -156,39 +156,37 @@ $hoteles = $stmt->fetchAll(PDO::FETCH_ASSOC);
       object-fit: cover;
     }
 
-    .hotel-info h3 {
-     margin: 0 0 8px;
-     font-size: 18px;
-     font-weight: bold;
-     color: #2c3e50;
-   }
-
-    .hotel-card p {
-      margin: 0 10px 10px;
-      font-size: 14px;
-      color: #777;
+    .hotel-info {
+      background-color: #fff;
+      padding: 12px 16px;
+      box-sizing: border-box;
+      text-align: center;
     }
 
-    .hotel-info {
-  background-color: #fff;
-  padding: 12px 16px;
-  box-sizing: border-box;
-  text-align: center; /* <-- centrado horizontal */
-}
+    .hotel-info h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
 
+    .hotel-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
 
-.hotel-info h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #2c3e50;
-}
+    select {
+      padding: 6px 12px;
+      font-size: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
 
-.hotel-info p {
-  margin: 0;
-  font-size: 14px;
-  color: #555;
-}
+    label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -229,33 +227,42 @@ $hoteles = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </h2>
   </div>
 
+  <!-- Filtro por categoría -->
+  <div class="filter-container">
+    <form method="GET" action="index.php">
+      <label for="categoria">Filtrar por estrellas:</label>
+      <select name="categoria" id="categoria" onchange="this.form.submit()">
+        <option value="">-- Todas --</option>
+        <option value="1" <?= (isset($_GET['categoria']) && $_GET['categoria'] == 1) ? 'selected' : '' ?>>1 estrella</option>
+        <option value="2" <?= (isset($_GET['categoria']) && $_GET['categoria'] == 2) ? 'selected' : '' ?>>2 estrellas</option>
+        <option value="3" <?= (isset($_GET['categoria']) && $_GET['categoria'] == 3) ? 'selected' : '' ?>>3 estrellas</option>
+        <option value="4" <?= (isset($_GET['categoria']) && $_GET['categoria'] == 4) ? 'selected' : '' ?>>4 estrellas</option>
+        <option value="5" <?= (isset($_GET['categoria']) && $_GET['categoria'] == 5) ? 'selected' : '' ?>>5 estrellas</option>
+      </select>
+    </form>
+  </div>
+
   <!-- Tarjetas de hoteles -->
   <div class="hotel-grid">
     <?php foreach ($hoteles as $row):
-      // Definir imagen según ID
-      $imagen = match($row['id']) {
-        1 => "../img/paraiso_del_mar.jpg",
-        2 => "../img/sierra verde.jpg",
-        3 => "../img/ciudad_central.jpg",
-        4 => "../img/colonial.jpeg",
-        5 => "../img/cafe.jpg",
-        7 => "../img/esencia.jpg",
-        default => "../img/7palabras.jpg"
-      };
+      $imagenNombre = $row['imagen'] ?? '';
+      $rutaImagen = (!empty($imagenNombre) && file_exists("../img_hoteles/" . $imagenNombre))
+        ? "../img_hoteles/" . $imagenNombre
+        : "../img/imagen_por_defecto.jpg";
     ?>
       <a class="hotel-card" href="../public/ver_hotel.php?id=<?= intval($row['id']) ?>">
-  <img src="<?= $imagen ?>" alt="Imagen del hotel">
-  <div class="hotel-info">
-    <h3><?= htmlspecialchars($row['nombre']) ?></h3>
-    <p><?= htmlspecialchars($row['direccion']) ?></p>
-  </div>
-</a>
+        <img src="<?= $rutaImagen ?>" alt="Imagen del hotel">
+        <div class="hotel-info">
+          <h3><?= htmlspecialchars($row['nombre']) ?></h3>
+          <p><?= htmlspecialchars($row['direccion']) ?></p>
+        </div>
+      </a>
     <?php endforeach; ?>
   </div>
-
 </div>
 
 <?php include("../index/footer.php"); ?>
 
 </body>
 </html>
+
