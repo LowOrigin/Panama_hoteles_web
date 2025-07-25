@@ -120,7 +120,7 @@ $instalaciones = $conn->query("SELECT * FROM instalaciones")->fetchAll(PDO::FETC
 </head>
 <body>
 
-<a href="dashboardeditor.php" class="back-button">← Volver</a>
+<a href="dashboard_editor.php" class="back-button">← Volver</a>
 
 <div class="form-container">
   <h2>Registrar Nuevo Hotel</h2>

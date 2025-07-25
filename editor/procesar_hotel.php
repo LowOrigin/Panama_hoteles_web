@@ -23,9 +23,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Procesar imagen
     $nombreImagen = null;
+    $directorioImagenes = '../img_hoteles/';
+
     if (!empty($_FILES['imagen']['name'])) {
-        $nombreImagen = uniqid() . '_' . basename($_FILES['imagen']['name']);
-        move_uploaded_file($_FILES['imagen']['tmp_name'], '../img_hoteles/' . $nombreImagen);
+        // Crear el directorio si no existe
+        if (!file_exists($directorioImagenes)) {
+            mkdir($directorioImagenes, 0777, true);
+        }
+
+        $archivoTmp = $_FILES['imagen']['tmp_name'];
+        $nombreOriginal = basename($_FILES['imagen']['name']);
+        $extension = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
+        $extensionesValidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        // Verifica que sea una imagen válida
+        if (in_array($extension, $extensionesValidas)) {
+            $nombreImagen = uniqid() . '.' . $extension;
+            $rutaDestino = $directorioImagenes . $nombreImagen;
+
+            if (!move_uploaded_file($archivoTmp, $rutaDestino)) {
+                $_SESSION['error'] = "Error al subir la imagen al servidor.";
+                header("Location: formulario_hotel.php");
+                exit();
+            }
+        } else {
+            $_SESSION['error'] = "Formato de imagen no válido. Solo se permiten: jpg, jpeg, png, gif, webp.";
+            header("Location: formulario_hotel.php");
+            exit();
+        }
     }
 
     try {
@@ -35,20 +60,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hotel_id = $conn->lastInsertId();
 
         // Insertar instalaciones
-        $stmtInst = $conn->prepare("INSERT INTO hotel_instalacion (hotel_id, instalacion_id) VALUES (?, ?)");
-        foreach ($instalaciones as $instalacion_id) {
-            $stmtInst->execute([$hotel_id, $instalacion_id]);
+        if (!empty($instalaciones)) {
+            $stmtInst = $conn->prepare("INSERT INTO hotel_instalacion (hotel_id, instalacion_id) VALUES (?, ?)");
+            foreach ($instalaciones as $instalacion_id) {
+                $stmtInst->execute([$hotel_id, $instalacion_id]);
+            }
         }
 
         // Insertar habitaciones
-        $stmtHab = $conn->prepare("INSERT INTO habitaciones (hotel_id, tipo, capacidad) VALUES (?, ?, ?)");
-        foreach ($tipos as $index => $tipo) {
-            $capacidad = $capacidades[$index] ?? 1;
-            $stmtHab->execute([$hotel_id, $tipo, $capacidad]);
+        if (!empty($tipos)) {
+            $stmtHab = $conn->prepare("INSERT INTO habitaciones (hotel_id, tipo, capacidad) VALUES (?, ?, ?)");
+            foreach ($tipos as $index => $tipo) {
+                $capacidad = $capacidades[$index] ?? 1;
+                $stmtHab->execute([$hotel_id, $tipo, $capacidad]);
+            }
         }
 
         $_SESSION['mensaje'] = "Hotel registrado correctamente.";
-        header("Location: ../editor/ver_hoteles_editor.php");
+        header("Location: ../editor/formulario_hotel.php");
         exit();
 
     } catch (Exception $e) {
