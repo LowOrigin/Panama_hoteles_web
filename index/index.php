@@ -234,6 +234,7 @@ $hoteles = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php foreach ($hoteles as $row):
       // Definir imagen según ID
       $imagen = match($row['id']) {
+        1 => "../img/paraiso_del_mar.jpg",
         2 => "../img/sierra verde.jpg",
         3 => "../img/ciudad_central.jpg",
         4 => "../img/colonial.jpeg",

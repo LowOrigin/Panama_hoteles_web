@@ -71,13 +71,6 @@ if (isset($_GET['id'])) {
     $stmtHabitaciones->execute([':hotel_id' => $hotel_id]);
     $habitaciones = $stmtHabitaciones->fetchAll(PDO::FETCH_ASSOC);
 
-    // Ruta manual de imagen (nombre del archivo debe ser definido aquí según el ID del hotel)
-    $imagenHotel = match($hotel_id) {
-        1 => "../img/hotel1.jpg",
-        2 => "../img/hotel2.jpg",
-        3 => "../img/hotel3.jpg",
-        default => "../img/default.jpg"
-    };
 }
 ?>
 
@@ -183,6 +176,7 @@ if (isset($_GET['id'])) {
 
     <p><a href="../index/index.php">← Volver a la lista de hoteles</a></p>
 <?php endif; ?>
-
+<!-- Footer -->
+<?php include("../index/footer.php"); ?>
 </body>
 </html>

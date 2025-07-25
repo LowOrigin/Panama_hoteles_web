@@ -107,11 +107,12 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <p><strong>Entrada:</strong> <?= $res['fecha_entrada'] ?></p>
                     <p><strong>Salida:</strong> <?= $res['fecha_salida'] ?></p>
                     <p><strong>Personas:</strong> <?= $res['personas'] ?></p>
-                    <a class="btn-cancelar" href="reservas.php?cancelar=<?= $res['id'] ?>" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
+                    <a href="reservas.php?cancelar=<?= $res['id'] ?>" class="btn-cancelar" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
                 </div>
             <?php endforeach; ?>
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
 
+    <?php include("../index/footer.php"); ?>
 </body>
 </html>
