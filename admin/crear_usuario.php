@@ -14,7 +14,6 @@ $usuarioExiste = false;
 $correoExiste = false;
 $claveInvalida = false;
 
-// Guardar valores para no vaciar campos si hay error
 $datosForm = [
     'nombre' => '',
     'apellido' => '',
@@ -33,13 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correoValido = filter_var($datosForm['correo'], FILTER_VALIDATE_EMAIL);
     $claveInvalida = strlen($datosForm['clave']) < 6;
 
-    // Verificar duplicados usando el nuevo método
     $duplicados = $db->usuarioOCorreoExiste($datosForm['usuario'], $datosForm['correo']);
     $usuarioExiste = $duplicados['usuario'];
     $correoExiste = $duplicados['correo'];
 
     if (!$correoValido || $claveInvalida || $usuarioExiste || $correoExiste) {
-        $mensaje = ""; // No mostrar mensaje general, solo los individuales
+        $mensaje = "";
     } else {
         $hash = password_hash($datosForm['clave'], PASSWORD_DEFAULT);
         $datos = [
@@ -81,34 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <title>Crear Usuario</title>
   <link rel="stylesheet" href="../css/estilosGenerales.css">
-  <style>
-    .back-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      text-decoration: none;
-      font-size: 18px;
-      color: #fff;
-      background-color: rgba(0, 0, 0, 0.4);
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      transition: background-color 0.3s ease;
-    }
-    .back-button:hover {
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-    .back-button span {
-      margin-left: 8px;
-    }
-    .error-borde {
-      border: 2px solid red;
-    }
-    body {
-      position: relative;
-    }
-  </style>
+  <link rel="stylesheet" href="../css/crearUsuario.css">
 </head>
 <body>
 

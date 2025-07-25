@@ -8,7 +8,26 @@ $reservaCtrl = new ControlReserva($db);
 
 // Verifica si el usuario ha iniciado sesión
 if (!isset($_SESSION['usuario_id'])) {
-    echo "<p>Por favor inicia sesión para ver tus reservas.</p>";
+    // Mostrar página estilizada si no hay sesión iniciada
+    ?>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Mis Reservas</title>
+        <link rel="stylesheet" href="../css/estilosGenerales.css">
+    </head>
+    <body>
+        <div class="card-container">
+            <h1>Acceso restringido</h1>
+            <p>Por favor inicia sesión para ver tus reservas.</p>
+            <a class="btn-volver" href="../formularios/login_form.php">Iniciar sesión</a><br><br>
+            <a class="btn-volver" href="../index/index.php">← Volver al inicio</a>
+        </div>
+        <?php include("../index/footer.php"); ?>
+    </body>
+    </html>
+    <?php
     exit();
 }
 
@@ -25,8 +44,8 @@ if (isset($_GET['cancelar'])) {
     exit();
 }
 
-// Consultar reservas del usuario
-$sql = "SELECT r.id, h.nombre AS hotel, hab.tipo AS habitacion, r.fecha_entrada, r.fecha_salida, r.personas
+// Consultar reservas del usuario con TOTAL
+$sql = "SELECT r.id, h.nombre AS hotel, hab.tipo AS habitacion, r.fecha_entrada, r.fecha_salida, r.personas, r.total
         FROM reservas r
         JOIN hoteles h ON r.hotel_id = h.id
         JOIN habitaciones hab ON r.habitacion_id = hab.id
@@ -43,76 +62,39 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Mis Reservas</title>
     <link rel="stylesheet" href="../css/estilosGenerales.css">
-    <style>
-        .reserva-contenedor {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .reserva-card {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .reserva-card h3 {
-            margin: 0 0 10px;
-            color: #2c3e50;
-        }
-
-        .reserva-card p {
-            margin: 4px 0;
-            color: #555;
-        }
-
-        .btn-cancelar {
-            display: inline-block;
-            margin-top: 10px;
-            background-color: #c0392b;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-cancelar:hover {
-            background-color: #e74c3c;
-        }
-
-        .titulo-reserva {
-            text-align: center;
-            font-size: 36px;
-            margin-top: 40px;
-            color: #2c3e50;
-        }
-    </style>
 </head>
 <body>
 
-    <div class="reserva-contenedor">
-        <h1 class="titulo-reserva">Mis Reservas</h1>
+<a href="../index/index.php" class="btn-volver">← Volver al inicio</a>
 
-        <?php if (empty($reservas)): ?>
-            <p style="text-align:center; color: #777;">No tienes reservas registradas.</p>
-        <?php else: ?>
-            <?php foreach ($reservas as $res): ?>
-                <div class="reserva-card">
-                    <h3><?= htmlspecialchars($res['hotel']) ?></h3>
-                    <p><strong>Habitación:</strong> <?= htmlspecialchars($res['habitacion']) ?></p>
-                    <p><strong>Entrada:</strong> <?= $res['fecha_entrada'] ?></p>
-                    <p><strong>Salida:</strong> <?= $res['fecha_salida'] ?></p>
-                    <p><strong>Personas:</strong> <?= $res['personas'] ?></p>
-                    <a href="reservas.php?cancelar=<?= $res['id'] ?>" class="btn-cancelar" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
-                </div>
-            <?php endforeach; ?>
+<div class="reserva-contenedor">
+    <h1 class="titulo-reserva">Mis Reservas</h1>
+
+    <?php if (empty($reservas)): ?>
+        <p style="text-align:center; color: #bbb;">No tienes reservas registradas.</p>
+    <?php else: ?>
+        <div class="reservas-grid">
+        <?php foreach ($reservas as $res): ?>
+            <div class="reserva-card">
+                <h3><?= htmlspecialchars($res['hotel']) ?></h3>
+                <p><strong>Habitación:</strong> <?= htmlspecialchars($res['habitacion']) ?></p>
+                <p><strong>Entrada:</strong> <?= $res['fecha_entrada'] ?></p>
+                <p><strong>Salida:</strong> <?= $res['fecha_salida'] ?></p>
+                <p><strong>Personas:</strong> <?= $res['personas'] ?></p>
+                <p><strong>Total a pagar:</strong>
+                    <?php if (!is_null($res['total'])): ?>
+                        $<?= number_format((float)$res['total'], 2) ?>
+                    <?php else: ?>
+                        <span style="color:#ff6b6b;">No disponible</span>
+                    <?php endif; ?>
+                </p>
+                <a href="reservas.php?cancelar=<?= $res['id'] ?>" class="btn-cancelar" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
+            </div>
+        <?php endforeach; ?>
         </div>
     <?php endif; ?>
+</div>
 
-    <?php include("../index/footer.php"); ?>
+<?php include("../index/footer.php"); ?>
 </body>
 </html>
