@@ -1,81 +1,187 @@
 <?php
-// Se incluye la clase mod_db que maneja la conexión a la base de datos
+session_start();
 require_once '../clases/mod_db.php';
+require_once '../control/ReservasController.php';
 
-// Se crea una instancia de la clase mod_db para establecer la conexión
 $db = new mod_db();
-// Se obtiene el objeto PDO de conexión
 $conn = $db->getConexion();
 
-// Se verifica si se ha recibido el parámetro 'id' vía GET, es decir, si se ha seleccionado un hotel
-if (isset($_GET['id'])) {
-    // Se convierte el valor recibido en entero para mayor seguridad y evitar inyección
+$control = new ControlReserva();
+
+$errores = [];
+$reservaExitosa = false;
+
+$usuario_id = $_SESSION['usuario_id'] ?? null;
+
+// Procesar formulario de reserva
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
+    $habitacion_id = $_POST['habitacion_id'] ?? null;
+    $fecha_entrada = $_POST['fecha_entrada'] ?? null;
+    $fecha_salida = $_POST['fecha_salida'] ?? null;
+    $personas = $_POST['personas'] ?? 1;
     $hotel_id = intval($_GET['id']);
 
-    // Preparar la consulta para obtener toda la información del hotel seleccionado
+    if (!$usuario_id) {
+        $errores[] = "Debes iniciar sesión para reservar.";
+    }
+    if (!$habitacion_id || !$fecha_entrada || !$fecha_salida) {
+        $errores[] = "Todos los campos son obligatorios.";
+    }
+
+    if (empty($errores)) {
+        $datos = [
+            'habitacion_id' => $habitacion_id,
+            'fecha_entrada' => $fecha_entrada,
+            'fecha_salida' => $fecha_salida,
+            'personas' => $personas,
+        ];
+
+        $errores = $control->validarDatos($datos);
+
+        if (empty($errores)) {
+            if ($control->excedeCapacidad($habitacion_id, $personas)) {
+                $errores[] = "La cantidad de personas excede la capacidad de la habitación.";
+            } elseif ($control->habitacionOcupada($habitacion_id, $fecha_entrada, $fecha_salida)) {
+                $errores[] = "La habitación ya está reservada en esas fechas.";
+            } else {
+                $reservaExitosa = $control->hacerReserva($usuario_id, $habitacion_id, $fecha_entrada, $fecha_salida, $personas);
+                if ($reservaExitosa) {
+                    header("Location: reservas.php");
+                    exit();
+                } else {
+                    $errores[] = "Error al guardar la reserva.";
+                }
+            }
+        }
+    }
+}
+
+// Mostrar hotel y habitaciones si se pasó id por GET
+if (isset($_GET['id'])) {
+    $hotel_id = intval($_GET['id']);
     $stmtHotel = $conn->prepare("SELECT * FROM hoteles WHERE id = :id");
-    // Se enlaza el parámetro :id con el valor del hotel
-    $stmtHotel->bindParam(":id", $hotel_id, PDO::PARAM_INT);
-    // Ejecutar la consulta
-    $stmtHotel->execute();
-    // Obtener el resultado como un arreglo asociativo
+    $stmtHotel->execute([':id' => $hotel_id]);
     $hotel = $stmtHotel->fetch(PDO::FETCH_ASSOC);
 
-    // Si el hotel existe
-    if ($hotel) {
-        // Mostrar el nombre del hotel con protección contra código malicioso (XSS)
-        echo "<h2>" . htmlspecialchars($hotel['nombre']) . "</h2>";
-
-        // Mostrar la ubicación (se asume que existe la columna 'ubicacion' en la tabla, aunque en la base de datos que mostraste está 'direccion')
-        echo "<p><strong>Ubicación:</strong> " . htmlspecialchars($hotel['direccion']) . "</p>";
-
-        // Mostrar la descripción del hotel
-        echo "<p><strong>Descripción:</strong> " . htmlspecialchars($hotel['descripcion']) . "</p>";
-        
-        // Preparar consulta para obtener los tipos de habitaciones y su capacidad para ese hotel
-        $stmtHabitaciones = $conn->prepare("SELECT tipo, capacidad FROM habitaciones WHERE hotel_id = :hotel_id");
-        // Enlazar parámetro con el id del hotel
-        $stmtHabitaciones->bindParam(":hotel_id", $hotel_id, PDO::PARAM_INT);
-        // Ejecutar consulta
-        $stmtHabitaciones->execute();
-        // Obtener todas las habitaciones como arreglo asociativo
-        $habitaciones = $stmtHabitaciones->fetchAll(PDO::FETCH_ASSOC);
-
-        // Si existen habitaciones registradas para el hotel
-        if ($habitaciones) {
-            echo "<h3>Tipos de Habitaciones:</h3><ul>";
-            // Recorrer cada habitación y mostrar tipo y capacidad
-            foreach ($habitaciones as $hab) {
-                echo "<li><strong>Tipo:</strong> " . htmlspecialchars($hab['tipo']) . 
-                     " — <strong>Capacidad:</strong> " . intval($hab['capacidad']) . " personas</li>";
-            }
-            echo "</ul>";
-        } else {
-            // Si no hay habitaciones para el hotel
-            echo "<p>No hay habitaciones registradas para este hotel.</p>";
-        }
-    } else {
-        // Si no se encuentra el hotel por el id dado
+    if (!$hotel) {
         echo "<p>Hotel no encontrado.</p>";
+        echo "<p><a href='ver_hotel.php'>← Volver a la lista de hoteles</a></p>";
+        exit;
     }
 
-    // Enlace para volver a la lista de hoteles
-    echo "<p><a href='ver_hotel.php'>← Volver a la lista de hoteles</a></p>";
-
-} else {
-    // Si no se ha seleccionado ningún hotel, mostrar la lista completa de hoteles disponibles
-
-    // Ejecutar una consulta simple para obtener id y nombre de todos los hoteles
-    $stmt = $conn->query("SELECT id, nombre FROM hoteles");
-
-    // Título de la sección
-    echo "<h2>Hoteles disponibles en Panamá</h2>";
-    echo "<ul>";
-    // Recorrer cada hotel y mostrar un enlace para ver detalles (pasando id por GET)
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        echo "<li><a href='ver_hotel.php?id=" . intval($row['id']) . "'>" . 
-             htmlspecialchars($row['nombre']) . "</a></li>";
-    }
-    echo "</ul>";
+    // Obtener habitaciones del hotel
+    $stmtHabitaciones = $conn->prepare("SELECT * FROM habitaciones WHERE hotel_id = :hotel_id");
+    $stmtHabitaciones->execute([':hotel_id' => $hotel_id]);
+    $habitaciones = $stmtHabitaciones->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title><?= isset($hotel) ? htmlspecialchars($hotel['nombre']) : 'Hoteles' ?></title>
+    <link rel="stylesheet" href="../css/estilosGenerales.css" />
+    <style>
+        .habitacion-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .reserva-form {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            max-width: 400px;
+        }
+        .reserva-form label {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function mostrarFormularioReserva() {
+            document.getElementById('formularioReserva').style.display = 'block';
+            document.getElementById('btnMostrarReserva').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <?php if (!isset($hotel)): ?>
+        <h2>Hoteles disponibles en Panamá</h2>
+        <ul>
+        <?php
+            $stmt = $conn->query("SELECT id, nombre FROM hoteles");
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                echo "<li><a href='ver_hotel.php?id=" . intval($row['id']) . "'>" .
+                     htmlspecialchars($row['nombre']) . "</a></li>";
+            }
+        ?>
+        </ul>
+    <?php else: ?>
+        <h1><?= htmlspecialchars($hotel['nombre']) ?></h1>
+        <p><strong>Ubicación:</strong> <?= htmlspecialchars($hotel['direccion']) ?></p>
+        <p><?= htmlspecialchars($hotel['descripcion']) ?></p>
+
+        <h3>Habitaciones disponibles:</h3>
+        <?php if ($habitaciones): ?>
+            <?php foreach ($habitaciones as $hab): ?>
+                <div class="habitacion-card">
+                    <p>
+                        <strong>Tipo:</strong> <?= htmlspecialchars($hab['tipo']) ?><br>
+                        <strong>Capacidad:</strong> <?= intval($hab['capacidad']) ?> personas
+                    </p>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No hay habitaciones registradas para este hotel.</p>
+        <?php endif; ?>
+
+        <?php if ($usuario_id): ?>
+            <button id="btnMostrarReserva" onclick="mostrarFormularioReserva()">Reservar</button>
+
+            <div id="formularioReserva" class="reserva-form" style="display:none;">
+                <h3>Formulario de Reserva</h3>
+
+                <?php if (!empty($errores)): ?>
+                    <ul style="color:red;">
+                        <?php foreach ($errores as $error): ?>
+                            <li><?= htmlspecialchars($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+
+                <form method="POST" action="ver_hotel.php?id=<?= $hotel_id ?>">
+                    <label for="habitacion_id">Habitación:</label>
+                    <select name="habitacion_id" required>
+                        <option value="">-- Seleccione una habitación --</option>
+                        <?php foreach ($habitaciones as $hab): ?>
+                            <option value="<?= $hab['id'] ?>">
+                                <?= htmlspecialchars($hab['tipo']) ?> (Capacidad: <?= intval($hab['capacidad']) ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <label for="fecha_entrada">Fecha de Entrada:</label>
+                    <input type="date" name="fecha_entrada" required />
+
+                    <label for="fecha_salida">Fecha de Salida:</label>
+                    <input type="date" name="fecha_salida" required />
+
+                    <label for="personas">Personas:</label>
+                    <input type="number" name="personas" min="1" value="1" required />
+
+                    <button type="submit">Confirmar Reserva</button>
+                </form>
+            </div>
+        <?php else: ?>
+            <p><em>Debes iniciar sesión para poder reservar.</em></p>
+        <?php endif; ?>
+
+        <p><a href="ver_hotel.php">← Volver a la lista de hoteles</a></p>
+    <?php endif; ?>
+</body>
+</html>

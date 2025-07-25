@@ -30,7 +30,7 @@ $usuario = $_SESSION['usuario'] ?? null;
     <!-- Lista de navegación con enlaces a las funcionalidades principales -->
     <ul style="margin-top: 30px; list-style: none; padding: 0;">
       <li><a href="../public/ver_hotel.php">🏨 Ver Hoteles</a></li>       <!-- Página para ver hoteles disponibles -->
-      <li><a href="../public/reservar.php">📅 Reservar</a></li>          <!-- Página para hacer una reserva -->
+      <li><a href="../public/reservas.php">📅 Reservas</a></li>          <!-- Página para hacer una reserva -->
       <li><a href="../formularios/login_form.php">🔐 Iniciar Sesión</a></li> <!-- Página de login -->
       <li><a href="../formularios/formulario_registro.php">📝 Registrarse</a></li>       <!-- Página de registro -->
     </ul>
