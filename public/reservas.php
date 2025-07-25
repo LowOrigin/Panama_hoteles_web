@@ -21,7 +21,7 @@ if (isset($_GET['cancelar'])) {
         ':id' => $idReserva,
         ':usuario_id' => $usuario_id
     ]);
-    header("Location: mis_reservas.php");
+    header("Location: reservas.php");
     exit();
 }
 
@@ -56,7 +56,7 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <strong>Entrada:</strong> <?= $res['fecha_entrada'] ?><br>
                     <strong>Salida:</strong> <?= $res['fecha_salida'] ?><br>
                     <strong>Personas:</strong> <?= $res['personas'] ?><br>
-                    <a href="mis_reservas.php?cancelar=<?= $res['id'] ?>" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
+                    <a href="reservas.php?cancelar=<?= $res['id'] ?>" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
                     <hr>
                 </li>
             <?php endforeach; ?>
