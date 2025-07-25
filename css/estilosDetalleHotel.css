@@ -1,0 +1,137 @@
+/* === Contenedor general === */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  color: #333;
+  padding: 40px;
+  line-height: 1.6;
+}
+
+/* === Título principal === */
+h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* === Imagen del hotel === */
+img {
+  max-width: 600px;
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* === Descripción del hotel === */
+.hotel-descripcion {
+  margin-bottom: 30px;
+}
+
+.hotel-descripcion p {
+  margin: 6px 0;
+}
+
+/* === Habitaciones === */
+h3 {
+  font-size: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.habitacion-card {
+  background-color: #fff;
+  border-left: 4px solid #3498db;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: 500px;
+}
+
+/* === Botón Reservar === */
+#btnMostrarReserva {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: background-color 0.3s ease;
+}
+
+#btnMostrarReserva:hover {
+  background-color: #219150;
+}
+
+/* === Formulario de reserva === */
+.reserva-form {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-top: 20px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.reserva-form h3 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #2c3e50;
+}
+
+.reserva-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.reserva-form input,
+.reserva-form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.reserva-form button[type="submit"] {
+  margin-top: 20px;
+  background-color: #2980b9;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reserva-form button[type="submit"]:hover {
+  background-color: #1f6390;
+}
+
+/* === Errores === */
+.reserva-form ul {
+  color: #c0392b;
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+/* === Enlace para volver === */
+.volver-link {
+  display: inline-block;
+  margin-top: 30px;
+  font-weight: bold;
+  color: #2980b9;
+  text-decoration: none;
+}
+
+.volver-link:hover {
+  text-decoration: underline;
+}

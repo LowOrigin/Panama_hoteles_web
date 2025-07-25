@@ -86,17 +86,16 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <title><?= isset($hotel) ? htmlspecialchars($hotel['nombre']) : 'Hoteles en Panamá' ?></title>
-    <link rel="stylesheet" href="../css/estilosHoteles.css">
+    <link rel="stylesheet" href="../css/estilosDetalleHotel.css">
     <script>
         function mostrarFormularioReserva() {
             document.getElementById('formularioReserva').style.display = 'block';
             document.getElementById('btnMostrarReserva').style.display = 'none';
         }
     </script>
-</head>
-<body>
 
-<?php if (!isset($hotel)): ?>
+
+    <?php if (!isset($hotel)): ?>
     <h2>Hoteles disponibles en Panamá</h2>
     <div class="hotel-grid">
         <?php
@@ -182,7 +181,7 @@ if (isset($_GET['id'])) {
         <p><em>Debes iniciar sesión para poder reservar.</em></p>
     <?php endif; ?>
 
-    <p><a href="ver_hotel.php">← Volver a la lista de hoteles</a></p>
+    <p><a href="../index/index.php">← Volver a la lista de hoteles</a></p>
 <?php endif; ?>
 
 </body>
