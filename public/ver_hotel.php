@@ -109,6 +109,7 @@ if (isset($_GET['id'])) {
                 3 => "../img/ciudad_central.jpg",
                 4 => "../img/colonial.jpeg",
                 5 => "../img/cafe.jpg",
+                7 => "../img/esencia.jpg",
                 default => "../img/7palabras.jpg"
             };
         ?>
@@ -122,8 +123,8 @@ if (isset($_GET['id'])) {
 <?php else: ?>
     <h1><?= htmlspecialchars($hotel['nombre']) ?></h1>
 
-    <!-- Imagen del hotel -->
-    <img src="<?= $imagenHotel ?>" alt="Imagen del hotel" style="max-width:600px; width:100%; border-radius: 10px; margin-bottom: 20px;">
+   <!-- Imagen del hotel -->
+<img src="<?= $imagenHotel ?>" alt="Imagen del hotel" style="max-width:600px; width:100%; border-radius: 10px; margin-bottom: 20px;">
 
     <p><strong>Ubicación:</strong> <?= htmlspecialchars($hotel['direccion']) ?></p>
     <p><?= htmlspecialchars($hotel['descripcion']) ?></p>
