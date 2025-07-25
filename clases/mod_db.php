@@ -42,5 +42,29 @@ class mod_db {
         $stmt->execute();
         return $stmt->fetchObject();
     }
+
+    public function usuarioOCorreoExiste($usuario, $correo): array {
+    $sql = "SELECT usuario, correo FROM usuarios WHERE usuario = :usuario OR correo = :correo";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->execute([
+        'usuario' => $usuario,
+        'correo' => $correo
+    ]);
+
+    $usuarioExiste = false;
+    $correoExiste = false;
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if ($row['usuario'] === $usuario) {
+            $usuarioExiste = true;
+        }
+        if ($row['correo'] === $correo) {
+            $correoExiste = true;
+        }
+    }
+
+    return ['usuario' => $usuarioExiste, 'correo' => $correoExiste];
+}
+
 }
 ?>
