@@ -109,6 +109,7 @@ if (isset($_GET['id'])) {
                 3 => "../img/ciudad_central.jpg",
                 4 => "../img/colonial.jpeg",
                 5 => "../img/cafe.jpg",
+                7 => "../img/esencia.jpg",
                 default => "../img/7palabras.jpg"
             };
         ?>
