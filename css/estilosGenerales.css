@@ -11,6 +11,14 @@
   --error: #ff6b6b;
 }
 
+.habitacion-card {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
 * {
   margin: 0;
   padding: 0;
@@ -296,4 +304,51 @@ html, body {
 
 .contenido {
   flex: 1;
+}
+/* ===== Tarjetas de Reservas ===== */
+
+.reservas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.reserva-card {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-dark);
+  border-left: 6px solid var(--accent);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  transition: transform 0.2s;
+}
+
+.reserva-card:hover {
+  transform: scale(1.02);
+}
+
+.reserva-card h3 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.reserva-card p {
+  margin: 6px 0;
+  color: var(--text-light);
+}
+
+.btn-cancelar {
+  display: inline-block;
+  margin-top: 10px;
+  background-color: var(--error);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-cancelar:hover {
+  background-color: #ff4b4b;
 }

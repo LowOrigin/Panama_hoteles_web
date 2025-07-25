@@ -38,42 +38,42 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Mis Reservas</title>
-    <!-- Enlace al archivo CSS general -->
     <link rel="stylesheet" href="../css/estilosGenerales.css">
 </head>
-  <!-- Navbar debajo del título -->
-  <div class="navbar">
-    <div class="nav-left">
-      <a href="../index/index.php">🏠 Inicio</a>
-      <a href="nosotros.php">📄 Nosotros</a>
-      <a href="../public/ver_hotel.php">🏨 Ver Hoteles</a>
-      <a href="../public/reservas.php">📅 Reservas</a>
-    </div>
 <body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="../index/index.php">🏠 Inicio</a>
+            <a href="nosotros.php">📄 Nosotros</a>
+            <a href="../public/ver_hotel.php">🏨 Ver Hoteles</a>
+            <a href="../public/reservas.php">📅 Reservas</a>
+        </div>
+    </div>
+
     <h1>Mis Reservas</h1>
 
     <?php if (empty($reservas)): ?>
         <p>No tienes reservas registradas.</p>
     <?php else: ?>
-        <ul>
+        <div class="reservas-grid">
             <?php foreach ($reservas as $res): ?>
-                <li>
-                    <strong>Hotel:</strong> <?= htmlspecialchars($res['hotel']) ?><br>
-                    <strong>Habitación:</strong> <?= htmlspecialchars($res['habitacion']) ?><br>
-                    <strong>Entrada:</strong> <?= $res['fecha_entrada'] ?><br>
-                    <strong>Salida:</strong> <?= $res['fecha_salida'] ?><br>
-                    <strong>Personas:</strong> <?= $res['personas'] ?><br>
-                    <a href="reservas.php?cancelar=<?= $res['id'] ?>" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
-                    <hr>
-                </li>
+                <div class="reserva-card">
+                    <h3><?= htmlspecialchars($res['hotel']) ?></h3>
+                    <p><strong>Habitación:</strong> <?= htmlspecialchars($res['habitacion']) ?></p>
+                    <p><strong>Entrada:</strong> <?= $res['fecha_entrada'] ?></p>
+                    <p><strong>Salida:</strong> <?= $res['fecha_salida'] ?></p>
+                    <p><strong>Personas:</strong> <?= $res['personas'] ?></p>
+                    <a href="reservas.php?cancelar=<?= $res['id'] ?>" class="btn-cancelar" onclick="return confirm('¿Cancelar esta reserva?')">Cancelar</a>
+                </div>
             <?php endforeach; ?>
-        </ul>
+        </div>
     <?php endif; ?>
-    <!-- Footer -->
-<?php include("../index/footer.php"); ?>
+
+    <?php include("../index/footer.php"); ?>
 </body>
 </html>
