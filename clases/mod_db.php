@@ -5,8 +5,8 @@ class mod_db {
     public function __construct() {
         $host = "localhost";
         $db = "sistema_hoteles";
-        $user = "app_userF";
-        $pass = "1234";
+        $user = "root";
+        $pass = "";
 
         $dsn = "mysql:host=$host;dbname=$db;charset=utf8";
         try {
