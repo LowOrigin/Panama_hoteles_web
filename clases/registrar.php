@@ -9,8 +9,13 @@ try {
         exit;
     }
 
-    $nombre   = SanitizarEntrada::limpiarCadena($_POST['nombre'] ?? '');
-    $apellido = SanitizarEntrada::limpiarCadena($_POST['apellido'] ?? '');
+   $nombre = SanitizarEntrada::limpiarCadena($_POST['nombre'] ?? '');
+   $apellido = SanitizarEntrada::limpiarCadena($_POST['apellido'] ?? '');
+
+   // Luego capitalizas sobre los valores ya limpiados
+   $nombre = SanitizarEntrada::capitalizarTituloEspañol($nombre);
+   $apellido = SanitizarEntrada::capitalizarTituloEspañol($apellido);
+    
     $usuario  = SanitizarEntrada::limpiarCadena($_POST['usuario'] ?? '');
     $correo   = filter_var($_POST['correo'] ?? '', FILTER_VALIDATE_EMAIL);
     $clave    = SanitizarEntrada::limpiarCadena($_POST['password'] ?? '');

@@ -25,9 +25,19 @@ $datosForm = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
     foreach ($datosForm as $key => $_) {
-        $datosForm[$key] = SanitizarEntrada::limpiarCadena($_POST[$key] ?? '');
+    $valor = SanitizarEntrada::limpiarCadena($_POST[$key] ?? '');
+
+    // Aplicar capitalización estilizada para nombre y apellido
+    if (in_array($key, ['nombre', 'apellido'])) {
+        $valor = SanitizarEntrada::capitalizarTituloEspañol($valor);
     }
+
+    $datosForm[$key] = $valor;
+}
+
+
 
     $correoValido = filter_var($datosForm['correo'], FILTER_VALIDATE_EMAIL);
     $claveInvalida = strlen($datosForm['clave']) < 6;
