@@ -58,10 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
 // Mostrar hotel y habitaciones
 if (isset($_GET['id'])) {
     $hotel_id = intval($_GET['id']);
+
+    // Obtener info del hotel + provincia + editor
     $stmtHotel = $conn->prepare("
-        SELECT h.*, u.nombre AS nombre_editor 
-        FROM hoteles h 
-        LEFT JOIN usuarios u ON h.creado_por = u.id 
+        SELECT h.*, u.nombre AS nombre_editor, p.nombre AS nombre_provincia
+        FROM hoteles h
+        LEFT JOIN usuarios u ON h.creado_por = u.id
+        LEFT JOIN provincias p ON h.provincia_id = p.id
         WHERE h.id = :id
     ");
     $stmtHotel->execute([':id' => $hotel_id]);
@@ -84,6 +87,16 @@ if (isset($_GET['id'])) {
     ");
     $stmtHabitaciones->execute([':hotel_id' => $hotel_id]);
     $habitaciones = $stmtHabitaciones->fetchAll(PDO::FETCH_ASSOC);
+
+    // Instalaciones del hotel
+    $stmtInstalaciones = $conn->prepare("
+        SELECT i.nombre
+        FROM instalaciones i
+        INNER JOIN hotel_instalacion hi ON i.id = hi.instalacion_id
+        WHERE hi.hotel_id = :hotel_id
+    ");
+    $stmtInstalaciones->execute([':hotel_id' => $hotel_id]);
+    $instalacionesHotel = $stmtInstalaciones->fetchAll(PDO::FETCH_COLUMN);
 }
 ?>
 <!DOCTYPE html>
@@ -128,7 +141,21 @@ if (isset($_GET['id'])) {
     <h1><?= htmlspecialchars($hotel['nombre']) ?></h1>
     <img src="<?= htmlspecialchars($imagenHotel) ?>" alt="Imagen del hotel" style="max-width:600px; width:100%; border-radius: 10px; margin-bottom: 20px;">
     <p><strong>Ubicación:</strong> <?= htmlspecialchars($hotel['direccion']) ?></p>
+    <?php if (!empty($hotel['nombre_provincia'])): ?>
+        <p><strong>Provincia:</strong> <?= htmlspecialchars($hotel['nombre_provincia']) ?></p>
+    <?php endif; ?>
     <p><?= htmlspecialchars($hotel['descripcion']) ?></p>
+
+    <?php if (!empty($instalacionesHotel)): ?>
+        <h3>Instalaciones:</h3>
+        <ul>
+            <?php foreach ($instalacionesHotel as $instalacion): ?>
+                <li><?= htmlspecialchars($instalacion) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p><em>Este hotel no tiene instalaciones registradas.</em></p>
+    <?php endif; ?>
 
     <?php if (!empty($hotel['nombre_editor'])): ?>
         <p><strong>Publicado por:</strong> <?= htmlspecialchars($hotel['nombre_editor']) ?></p>
@@ -149,6 +176,7 @@ if (isset($_GET['id'])) {
 
     <?php if ($usuario_id): ?>
         <button id="btnMostrarReserva" onclick="mostrarFormularioReserva()">Reservar</button>
+        
 
         <div id="formularioReserva" class="reserva-form" style="display:none;">
             <h3>Formulario de Reserva</h3>
@@ -191,7 +219,7 @@ if (isset($_GET['id'])) {
         <p><em>Debes iniciar sesión para poder reservar.</em></p>
     <?php endif; ?>
 <?php endif; ?>
-
+<br><br>
 <?php include("../index/footer.php"); ?>
 </body>
 </html>

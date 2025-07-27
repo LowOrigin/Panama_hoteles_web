@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../clases/mod_db.php';
+require_once '../clases/SanitizarEntrada.php'; // Asegúrate de tener esta clase en esa ruta
 
 // Verificar rol editor
 if (!isset($_SESSION['usuario']) || $_SESSION['rol'] !== 'editor') {
@@ -12,16 +13,24 @@ $db = new mod_db();
 $conn = $db->getConexion();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Recibir datos del formulario
-    $nombre = trim($_POST['nombre'] ?? '');
-    $direccion = trim($_POST['direccion'] ?? '');
-    $descripcion = trim($_POST['descripcion'] ?? '');
-    $categoria_id = $_POST['categoria_id'] ?? null;
+    // Recibir y sanitizar datos del formulario
+    $nombre = SanitizarEntrada::capitalizarTituloEspañol($_POST['nombre'] ?? '');
+    $direccion = SanitizarEntrada::limpiarCadena($_POST['direccion'] ?? '');
+    $provincia_id = SanitizarEntrada::limpiarCadena($_POST['provincia_id'] ?? '');
+    $descripcion = SanitizarEntrada::limpiarCadena($_POST['descripcion'] ?? '');
+    $categoria_id = SanitizarEntrada::limpiarCadena($_POST['categoria_id'] ?? '');
     $instalaciones = $_POST['instalaciones'] ?? [];
     $tipos = $_POST['tipo_habitacion'] ?? [];
     $capacidades = $_POST['capacidad'] ?? [];
     $precios = $_POST['precio'] ?? [];
     $temporadas = $_POST['temporada'] ?? [];
+
+    // Validar provincia
+    if (!$provincia_id || !is_numeric($provincia_id)) {
+        $_SESSION['error'] = "Debe seleccionar una provincia válida.";
+        header("Location: formulario_hotel.php");
+        exit();
+    }
 
     // Obtener ID del editor que está creando el hotel
     $creado_por = $_SESSION['usuario_id'] ?? null;
@@ -57,16 +66,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Insertar hotel con el campo creado_por
-        $stmt = $conn->prepare("INSERT INTO hoteles (nombre, descripcion, direccion, categoria_id, imagen, creado_por) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$nombre, $descripcion, $direccion, $categoria_id, $nombreImagen, $creado_por]);
+        // Insertar hotel con provincia
+        $stmt = $conn->prepare("INSERT INTO hoteles (nombre, descripcion, direccion, categoria_id, imagen, creado_por, provincia_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$nombre, $descripcion, $direccion, $categoria_id, $nombreImagen, $creado_por, $provincia_id]);
         $hotel_id = $conn->lastInsertId();
 
         // Insertar instalaciones del hotel
         if (!empty($instalaciones)) {
             $stmtInst = $conn->prepare("INSERT INTO hotel_instalacion (hotel_id, instalacion_id) VALUES (?, ?)");
             foreach ($instalaciones as $instalacion_id) {
-                $stmtInst->execute([$hotel_id, $instalacion_id]);
+                $stmtInst->execute([$hotel_id, intval($instalacion_id)]);
             }
         }
 
@@ -76,12 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtCosto = $conn->prepare("INSERT INTO costes_habitaciones (habitacion_id, precio_por_noche, temporada) VALUES (?, ?, ?)");
 
             foreach ($tipos as $index => $tipo) {
-                $capacidad = $capacidades[$index] ?? 1;
-                $stmtHab->execute([$hotel_id, $tipo, $capacidad]);
+                $tipoSanitizado = SanitizarEntrada::limpiarCadena($tipo);
+                $capacidad = intval($capacidades[$index] ?? 1);
+                $stmtHab->execute([$hotel_id, $tipoSanitizado, $capacidad]);
                 $habitacion_id = $conn->lastInsertId();
 
                 $precio = floatval($precios[$index] ?? 0);
-                $temporada = trim($temporadas[$index] ?? 'alta');
+                $temporada = SanitizarEntrada::limpiarCadena($temporadas[$index] ?? 'alta');
 
                 $stmtCosto->execute([$habitacion_id, $precio, $temporada]);
             }

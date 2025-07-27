@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 27-07-2025 a las 04:08:32
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Servidor: 127.0.0.1:3306
+-- Tiempo de generación: 27-07-2025 a las 18:05:44
+-- Versión del servidor: 9.1.0
+-- Versión de PHP: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,10 +27,12 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `categorias`
 --
 
-CREATE TABLE `categorias` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `categorias`;
+CREATE TABLE IF NOT EXISTS `categorias` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `categorias`
@@ -49,13 +51,16 @@ INSERT INTO `categorias` (`id`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `costes_habitaciones`
 --
 
-CREATE TABLE `costes_habitaciones` (
-  `id` int(11) NOT NULL,
-  `habitacion_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `costes_habitaciones`;
+CREATE TABLE IF NOT EXISTS `costes_habitaciones` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `habitacion_id` int NOT NULL,
   `precio_por_noche` decimal(10,2) NOT NULL,
-  `temporada` enum('alta','media','baja') DEFAULT 'media',
-  `moneda` varchar(10) DEFAULT 'USD'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `temporada` enum('alta','media','baja') COLLATE utf8mb4_unicode_ci DEFAULT 'media',
+  `moneda` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'USD',
+  PRIMARY KEY (`id`),
+  KEY `habitacion_id` (`habitacion_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `costes_habitaciones`
@@ -76,7 +81,10 @@ INSERT INTO `costes_habitaciones` (`id`, `habitacion_id`, `precio_por_noche`, `t
 (12, 16, 7777.77, 'alta', 'USD'),
 (13, 21, 85.99, 'baja', 'USD'),
 (14, 22, 60.00, 'baja', 'USD'),
-(15, 23, 600.00, 'alta', 'USD');
+(15, 23, 600.00, 'alta', 'USD'),
+(16, 24, 1000.00, 'baja', 'USD'),
+(17, 25, 2.50, 'alta', 'USD'),
+(18, 26, 2.00, 'alta', 'USD');
 
 -- --------------------------------------------------------
 
@@ -84,12 +92,15 @@ INSERT INTO `costes_habitaciones` (`id`, `habitacion_id`, `precio_por_noche`, `t
 -- Estructura de tabla para la tabla `habitaciones`
 --
 
-CREATE TABLE `habitaciones` (
-  `id` int(11) NOT NULL,
-  `hotel_id` int(11) NOT NULL,
-  `tipo` varchar(100) NOT NULL,
-  `capacidad` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `habitaciones`;
+CREATE TABLE IF NOT EXISTS `habitaciones` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `hotel_id` int NOT NULL,
+  `tipo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `capacidad` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hotel_id` (`hotel_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `habitaciones`
@@ -106,7 +117,6 @@ INSERT INTO `habitaciones` (`id`, `hotel_id`, `tipo`, `capacidad`) VALUES
 (8, 4, 'Habitación colonial', 3),
 (9, 5, 'Suite cafetera', 4),
 (10, 5, 'Habitación estándar', 2),
-(16, 13, 'Super Suite (mejor que la presidencial)', 7),
 (20, 17, 'Suite esencial', 7),
 (21, 18, '5', 2),
 (22, 19, 'Habitación Clasica', 2),
@@ -118,32 +128,36 @@ INSERT INTO `habitaciones` (`id`, `hotel_id`, `tipo`, `capacidad`) VALUES
 -- Estructura de tabla para la tabla `hoteles`
 --
 
-CREATE TABLE `hoteles` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `descripcion` text DEFAULT NULL,
-  `direccion` varchar(255) DEFAULT NULL,
-  `categoria_id` int(11) DEFAULT NULL,
-  `imagen` varchar(255) DEFAULT NULL,
-  `aprobado` tinyint(1) NOT NULL DEFAULT 0,
-  `creado_por` int(11) DEFAULT NULL,
-  `provincia_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `hoteles`;
+CREATE TABLE IF NOT EXISTS `hoteles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcion` text COLLATE utf8mb4_unicode_ci,
+  `direccion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `categoria_id` int DEFAULT NULL,
+  `imagen` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `aprobado` tinyint(1) NOT NULL DEFAULT '0',
+  `creado_por` int DEFAULT NULL,
+  `provincia_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `categoria_id` (`categoria_id`),
+  KEY `fk_creado_por` (`creado_por`),
+  KEY `fk_provincia_id` (`provincia_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `hoteles`
 --
 
 INSERT INTO `hoteles` (`id`, `nombre`, `descripcion`, `direccion`, `categoria_id`, `imagen`, `aprobado`, `creado_por`, `provincia_id`) VALUES
-(1, 'Hotel Paraíso del Mar', 'Frente a la playa con acceso privado y spa.', 'Cartagena, Colombia', 5, 'paraiso_del_mar.jpg', 1, 3, NULL),
-(2, 'Hotel Sierra Verde', 'En medio de la montaña, ideal para el ecoturismo.', 'Boquete, Panamá', 4, 'sierra verde.jpg', 1, 3, NULL),
-(3, 'Hotel Ciudad Central', 'En el centro financiero. Perfecto para negocios.', 'Ciudad de Panamá, Panamá', 4, 'ciudad_central.jpg', 1, 3, NULL),
-(4, 'Hotel Colonial', 'Casa colonial restaurada con encanto.', 'Antigua Guatemala, Guatemala', 3, 'hotel colonial.jpg', 0, 3, NULL),
-(5, 'Hotel Ruta del Café', 'Ubicado en una finca cafetera tradicional.', 'Matagalpa, Nicaragua', 4, 'ruta_cafe.jpg', 0, 3, NULL),
-(13, 'Hotel 7 Palabras', 'Siente la verdadera ESENCIA', 'Akihabara, Japón', 5, '688389768673e.jpg', 1, 3, NULL),
-(17, 'Hotel 7 palabras', 'Siente la verdadera ESENCIA', 'Akihabara, Japón', 5, '688399c52ce6e.jpg', 1, 1, NULL),
-(18, 'hotel bonito', 'lugar epico', 'mi casa', 3, '6883a85b40335.jpeg', 1, 3, NULL),
-(19, 'hotel Panama', 'hotel en Panamá', 'Panamá', 2, '6883b709f0df0.jpg', 1, 3, NULL);
+(1, 'Hotel Paraíso del Mar', 'Relájate frente al mar Caribe en un entorno exclusivo con playa privada, rodeado de naturaleza tropical en Isla Colón.', 'Playa Estrella, Isla Colón, Bocas del Toro', 5, 'paraiso_del_mar.jpg', 1, 3, 1),
+(2, 'Hotel Sierra Verde', 'Vive la experiencia del ecoturismo entre montañas, senderos naturales y aire puro en el encantador Valle de Antón.', 'El Valle de Antón, Calle Los Helechos, Coclé', 4, 'sierra verde.jpg', 1, 3, 2),
+(3, 'Hotel Ciudad Central', 'Comodidad ejecutiva en el corazón de la Zona Libre de Colón. Ideal para negocios y estadías corporativas.', 'Calle 3ra, Ciudad de Colón, frente a Zona Libre', 4, 'ciudad_central.jpg', 1, 3, 3),
+(4, 'Hotel Colonial', 'Hospédate en una casa colonial restaurada, llena de historia y encanto en el centro de Penonomé.', 'Calle Real, Penonomé Centro, Coclé', 3, 'hotel colonial.jpg', 1, 3, 2),
+(5, 'Hotel Ruta del Café', 'Descubre el mundo del café en un entorno natural privilegiado en Volcán, con vistas al majestuoso Barú.', 'Finca Cafetalera El Bambito, Volcán, Chiriquí', 4, 'ruta_cafe.jpg', 1, 3, 4),
+(17, 'Hotel 7 palabras', 'Siente la verdadera esencia del descanso en un hotel rodeado de selva tropical, cultura y tranquilidad en Darién.', 'Carretera Panamericana, Metetí, Darién', 5, 'hotel_esencia_japonesa.jpg', 1, 1, 5),
+(18, 'hotel bonito', 'Un refugio sencillo y acogedor en el corazón de Veraguas, ideal para desconectarte y explorar la región.', 'Calle Central, Santiago de Veraguas, Veraguas', 3, '6883a85b40335.jpeg', 1, 3, 10),
+(19, 'hotel Panama', 'Disfruta del calor típico y la hospitalidad santeña en Las Tablas, capital del folklore panameño.', 'Calle Principal, Las Tablas, Los Santos', 2, '6883b709f0df0.jpg', 1, 3, 7);
 
 -- --------------------------------------------------------
 
@@ -151,11 +165,15 @@ INSERT INTO `hoteles` (`id`, `nombre`, `descripcion`, `direccion`, `categoria_id
 -- Estructura de tabla para la tabla `hotel_instalacion`
 --
 
-CREATE TABLE `hotel_instalacion` (
-  `id` int(11) NOT NULL,
-  `hotel_id` int(11) DEFAULT NULL,
-  `instalacion_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `hotel_instalacion`;
+CREATE TABLE IF NOT EXISTS `hotel_instalacion` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `hotel_id` int DEFAULT NULL,
+  `instalacion_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hotel_id` (`hotel_id`),
+  KEY `instalacion_id` (`instalacion_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `hotel_instalacion`
@@ -179,14 +197,6 @@ INSERT INTO `hotel_instalacion` (`id`, `hotel_id`, `instalacion_id`) VALUES
 (15, 5, 1),
 (16, 5, 5),
 (17, 5, 6),
-(31, 13, 1),
-(32, 13, 2),
-(33, 13, 3),
-(34, 13, 4),
-(35, 13, 5),
-(36, 13, 6),
-(37, 13, 7),
-(38, 13, 8),
 (44, 17, 1),
 (45, 17, 2),
 (46, 17, 3),
@@ -208,10 +218,12 @@ INSERT INTO `hotel_instalacion` (`id`, `hotel_id`, `instalacion_id`) VALUES
 -- Estructura de tabla para la tabla `instalaciones`
 --
 
-CREATE TABLE `instalaciones` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `instalaciones`;
+CREATE TABLE IF NOT EXISTS `instalaciones` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `instalaciones`
@@ -233,10 +245,12 @@ INSERT INTO `instalaciones` (`id`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `provincias`
 --
 
-CREATE TABLE `provincias` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `provincias`;
+CREATE TABLE IF NOT EXISTS `provincias` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `provincias`
@@ -260,27 +274,30 @@ INSERT INTO `provincias` (`id`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `reservas`
 --
 
-CREATE TABLE `reservas` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
-  `hotel_id` int(11) NOT NULL,
-  `habitacion_id` int(11) NOT NULL,
-  `personas` int(11) NOT NULL,
+DROP TABLE IF EXISTS `reservas`;
+CREATE TABLE IF NOT EXISTS `reservas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario_id` int NOT NULL,
+  `hotel_id` int NOT NULL,
+  `habitacion_id` int NOT NULL,
+  `personas` int NOT NULL,
   `total` decimal(10,2) DEFAULT NULL,
   `fecha_entrada` date NOT NULL,
   `fecha_salida` date NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `usuario_id` (`usuario_id`),
+  KEY `hotel_id` (`hotel_id`),
+  KEY `habitacion_id` (`habitacion_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `reservas`
 --
 
 INSERT INTO `reservas` (`id`, `usuario_id`, `hotel_id`, `habitacion_id`, `personas`, `total`, `fecha_entrada`, `fecha_salida`, `created_at`) VALUES
-(1, 4, 1, 1, 3, NULL, '2025-07-26', '2025-08-02', '2025-07-25 06:05:39'),
 (3, 8, 1, 2, 1, NULL, '2025-01-01', '2025-01-02', '2025-07-25 14:09:23'),
 (4, 2, 17, 20, 7, 24110.87, '2025-10-07', '2025-11-07', '2025-07-25 14:52:41'),
-(5, 7, 17, 20, 7, 21777.56, '2026-02-07', '2026-03-07', '2025-07-25 14:57:22'),
 (6, 10, 19, 22, 2, 360.00, '2025-07-25', '2025-07-31', '2025-07-25 17:00:38');
 
 -- --------------------------------------------------------
@@ -289,163 +306,40 @@ INSERT INTO `reservas` (`id`, `usuario_id`, `hotel_id`, `habitacion_id`, `person
 -- Estructura de tabla para la tabla `usuarios`
 --
 
-CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL,
-  `apellido` varchar(50) NOT NULL,
-  `usuario` varchar(50) NOT NULL,
-  `correo` varchar(100) NOT NULL,
-  `clave` varchar(255) NOT NULL,
-  `sexo` enum('M','F') NOT NULL,
-  `rol` enum('admin','editor','cliente') NOT NULL DEFAULT 'cliente',
-  `activo` tinyint(1) DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `usuarios`;
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `apellido` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usuario` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `correo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `clave` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sexo` enum('M','F') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rol` enum('admin','editor','cliente') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'cliente',
+  `activo` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `usuario` (`usuario`),
+  UNIQUE KEY `correo` (`correo`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `usuario`, `correo`, `clave`, `sexo`, `rol`, `activo`, `created_at`) VALUES
-(1, 'Jhon', 'Carlo', 'getsexo', 'sexoso@gmail.com', '$2y$10$WnuekKza34qMow.NsvrXGeV7XkdoKHQ7O0OG3RpteGTvxMS.0Wb9e', 'M', 'cliente', 1, '2025-07-25 01:26:46'),
+(1, 'Jhon', 'Carlo', 'JhonSito', 'JhonCarloSito@gmail.com', '$2y$10$WnuekKza34qMow.NsvrXGeV7XkdoKHQ7O0OG3RpteGTvxMS.0Wb9e', 'M', 'cliente', 1, '2025-07-25 01:26:46'),
 (2, 'Admin1', 'Principal', 'admin1', 'admin01@hotel.com', '$2y$10$gJZmyTjC6MiFz0u4LjAjRuw9e/8ckbFc9cEk9Rq7//1Akks/UDe2y', 'M', 'admin', 1, '2025-07-25 04:34:20'),
-(3, 'editor', 'ElqueEdita', 'editor', 'editor@gmil.com', '$2y$10$D6JkMyC/2WuHKQv/NrIsC.hZLk966gxEWjjj/zIHKPMMiz97z9eji', 'F', 'editor', 1, '2025-07-25 04:35:38'),
-(4, 'usuario', 'usuario', 'usuario', 'usuario@gmail.com', '$2y$10$wr07a11WHYLB0r4pEH3XWuRDiwXljdULNHRgnKA5lyL30lHkVu3EW', 'M', 'cliente', 1, '2025-07-25 06:05:03'),
-(5, 'yosue', 'pineda', 'soladito', 'soldadito@gmail.com', '$2y$10$9Ai1KMvazxNuklfs9VLPTeAhZKq.CjJ5k1DUfTi.EOakqSY.wNJDm', 'M', 'editor', 0, '2025-07-25 09:29:22'),
-(6, 'yosue', 'pineda', 'pineda', 'pineda@utp.ac.pa', '$2y$10$g8G.X8tOBTAwXZul4YpZsOfQPPo/1HvdAfEGCgSaa3fXftasEufLu', 'M', 'admin', 1, '2025-07-25 09:39:49'),
-(7, 'Broly', 'esencia', 'Alguien dijo ESENCIA', '7palabras@gmail.com', '$2y$10$/GfNSjiZ.eLywTbb.43H8e1HmH0HBKD1h1iUr0sR37dyg0Wm.jSL2', 'M', 'cliente', 1, '2025-07-25 13:43:03'),
+(3, 'Juan', 'Montruas', 'editor', 'editor@gmil.com', '$2y$10$D6JkMyC/2WuHKQv/NrIsC.hZLk966gxEWjjj/zIHKPMMiz97z9eji', 'F', 'editor', 1, '2025-07-25 04:35:38'),
+(5, 'Yosue', 'Pineda', 'soladito', 'soldadito@gmail.com', '$2y$10$9Ai1KMvazxNuklfs9VLPTeAhZKq.CjJ5k1DUfTi.EOakqSY.wNJDm', 'M', 'editor', 1, '2025-07-25 09:29:22'),
 (8, 'Alex', 'Pan', 'alexpan', 'alexpan@gmail.com', '$2y$10$L/PnMssNbvWqeigI8TfVEet8zKWyg7OW8vW0XzQ.zbfXWiIz.SwPu', 'M', 'cliente', 1, '2025-07-25 14:08:41'),
-(9, 'yosue', 'pineda', 'yosue', 'yosue@utp.ac.pa', '$2y$10$n3RINv/0IUVKyp01cQqNbOgkjVs3z5PxJ558OEg0ZsQt2N5hqxlyq', 'M', 'editor', 1, '2025-07-25 15:50:25'),
 (10, 'Juan', 'Peréz', 'JuanPe', 'juanpereza@gmail.com', '$2y$10$IZHmftDp3wZg8nxPodkTx.KKmqFVSj0UCrLe19hY/4FdTW3irA5u6', 'M', 'cliente', 1, '2025-07-25 16:58:19'),
-(11, 'Pepe', 'Pinzon', 'Peponcio', 'pepe@gmail.com', '$2y$10$J8Ho.vTeopLQXldZPH4F9ethW4EvZ6ohLe13zNPwXaF2nIO82YgGi', 'M', 'editor', 1, '2025-07-25 17:10:55');
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `categorias`
---
-ALTER TABLE `categorias`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `costes_habitaciones`
---
-ALTER TABLE `costes_habitaciones`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `habitacion_id` (`habitacion_id`);
-
---
--- Indices de la tabla `habitaciones`
---
-ALTER TABLE `habitaciones`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `hotel_id` (`hotel_id`);
-
---
--- Indices de la tabla `hoteles`
---
-ALTER TABLE `hoteles`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `categoria_id` (`categoria_id`),
-  ADD KEY `fk_creado_por` (`creado_por`),
-  ADD KEY `fk_provincia_id` (`provincia_id`);
-
---
--- Indices de la tabla `hotel_instalacion`
---
-ALTER TABLE `hotel_instalacion`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `hotel_id` (`hotel_id`),
-  ADD KEY `instalacion_id` (`instalacion_id`);
-
---
--- Indices de la tabla `instalaciones`
---
-ALTER TABLE `instalaciones`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `provincias`
---
-ALTER TABLE `provincias`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `reservas`
---
-ALTER TABLE `reservas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`),
-  ADD KEY `hotel_id` (`hotel_id`),
-  ADD KEY `habitacion_id` (`habitacion_id`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `usuario` (`usuario`),
-  ADD UNIQUE KEY `correo` (`correo`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `categorias`
---
-ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de la tabla `costes_habitaciones`
---
-ALTER TABLE `costes_habitaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
--- AUTO_INCREMENT de la tabla `habitaciones`
---
-ALTER TABLE `habitaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-
---
--- AUTO_INCREMENT de la tabla `hoteles`
---
-ALTER TABLE `hoteles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
---
--- AUTO_INCREMENT de la tabla `hotel_instalacion`
---
-ALTER TABLE `hotel_instalacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
-
---
--- AUTO_INCREMENT de la tabla `instalaciones`
---
-ALTER TABLE `instalaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT de la tabla `provincias`
---
-ALTER TABLE `provincias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de la tabla `reservas`
---
-ALTER TABLE `reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+(11, 'Pepe', 'Pinzon', 'Peponcio', 'pepe@gmail.com', '$2y$10$J8Ho.vTeopLQXldZPH4F9ethW4EvZ6ohLe13zNPwXaF2nIO82YgGi', 'M', 'editor', 1, '2025-07-25 17:10:55'),
+(12, 'Fulanito', 'Juares', 'jf', 'jf@gmail.com', '$2y$10$rCaSS/FfXcbXZwqinFw8Ruymq9nCa.ZApyXTwv75hA.obS7irNrWq', 'M', 'editor', 1, '2025-07-27 02:35:30'),
+(13, 'Analia Solis', 'Pineda Peralta', 'Ana', 'analiaSolis@gmail.com', '$2y$10$TynZY5kD7i4qKjSeBIA4COTti6mHJvV4bJ19km/pV1vYhQuxKr1Ga', 'F', 'admin', 1, '2025-07-27 02:37:59'),
+(14, 'José Peralta', 'Antonio Jhon', 'jhon', 'jhonJose@gmail.com', '$2y$10$63.3KiDumm57KQQLz.4Ao.beeMTomRCGnQS8XU9unjGCax2XY7ONq', 'M', 'cliente', 1, '2025-07-27 02:45:12'),
+(15, 'Manuel del Carmen', 'Peralta Gomez', 'manuel', 'manuel@gamil.com', '$2y$10$CYRT0UzlwNhgTlBPWoP2zeCGEyebynFz/y05GA88kgMZp2NEFUlGi', 'M', 'editor', 1, '2025-07-27 03:35:35'),
+(16, 'Angel de Elviondo', 'Garcia Perez', 'angelTrue', 'trueAngel@gmail.com', '$2y$10$6iOJ4bE32tE9fOqwNAUdnedf6UzhPSL.MFnBP5F4uDw5L4c6ihdSu', 'M', 'cliente', 1, '2025-07-27 03:37:23');
 
 --
 -- Restricciones para tablas volcadas

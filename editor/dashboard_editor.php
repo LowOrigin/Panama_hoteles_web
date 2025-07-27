@@ -32,6 +32,14 @@ $nombre = htmlspecialchars($_SESSION['usuario']);
       </div>
     </a>
 
+    <a href="historial_hoteles.php" class="card-link">
+      <div class="editor-card">
+        <span style="font-size: 32px;">📋</span>
+        <h3>Historial de mis Hoteles</h3>
+       </div>
+    </a>
+
+
     <a href="../public/logout.php" class="card-link">
       <div class="editor-card">
         <span>🚪</span>

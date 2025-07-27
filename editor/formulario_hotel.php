@@ -10,9 +10,10 @@ require_once '../clases/mod_db.php';
 $db = new mod_db();
 $conn = $db->getConexion();
 
-// Obtener categorías e instalaciones
+// Obtener categorías, instalaciones y provincias
 $categorias = $conn->query("SELECT * FROM categorias")->fetchAll(PDO::FETCH_ASSOC);
 $instalaciones = $conn->query("SELECT * FROM instalaciones")->fetchAll(PDO::FETCH_ASSOC);
+$provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -38,6 +39,16 @@ $instalaciones = $conn->query("SELECT * FROM instalaciones")->fetchAll(PDO::FETC
     <div class="form-group">
       <label>Dirección:</label>
       <input type="text" name="direccion" required>
+    </div>
+
+    <div class="form-group">
+      <label>Provincia:</label>
+      <select name="provincia_id" required>
+        <option value="">-- Seleccione una provincia --</option>
+        <?php foreach ($provincias as $prov): ?>
+          <option value="<?= $prov['id'] ?>"><?= htmlspecialchars($prov['nombre']) ?></option>
+        <?php endforeach; ?>
+      </select>
     </div>
 
     <div class="form-group">
