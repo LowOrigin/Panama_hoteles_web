@@ -58,7 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
 // Mostrar hotel y habitaciones
 if (isset($_GET['id'])) {
     $hotel_id = intval($_GET['id']);
-    $stmtHotel = $conn->prepare("SELECT * FROM hoteles WHERE id = :id");
+    $stmtHotel = $conn->prepare("
+        SELECT h.*, u.nombre AS nombre_editor 
+        FROM hoteles h 
+        LEFT JOIN usuarios u ON h.creado_por = u.id 
+        WHERE h.id = :id
+    ");
     $stmtHotel->execute([':id' => $hotel_id]);
     $hotel = $stmtHotel->fetch(PDO::FETCH_ASSOC);
 
@@ -66,37 +71,17 @@ if (isset($_GET['id'])) {
         echo "<p>Hotel no encontrado.</p><p><a href='ver_hotel.php'>← Volver</a></p>";
         exit;
     }
-    // Determinar la imagen del hotel según su ID
-    switch ($hotel['id']) {
-        case 1:
-            $imagenHotel = "../img/paraiso_del_mar.jpg";
-            break;
-        case 2:
-            $imagenHotel = "../img/sierra verde.jpg";
-            break;
-        case 3:
-            $imagenHotel = "../img/ciudad_central.jpg";
-            break;
-        case 4:
-            $imagenHotel = "../img/colonial.jpeg";
-            break;
-        case 5:
-            $imagenHotel = "../img/cafe.jpg";
-            break;
-        case 7:
-            $imagenHotel = "../img/esencia.jpg";
-            break;
-        default:
-            $imagenHotel = "../img/7palabras.jpg";
-            break;
-    }
 
-    // Obtener imagen desde campo 'imagen'
     $nombreImagen = $hotel['imagen'] ?? 'default.jpg';
     $imagenHotel = "../img_hoteles/" . $nombreImagen;
 
-    // Habitaciones
-    $stmtHabitaciones = $conn->prepare("SELECT * FROM habitaciones WHERE hotel_id = :hotel_id");
+    // Habitaciones con precio
+    $stmtHabitaciones = $conn->prepare("
+        SELECT h.*, c.precio_por_noche
+        FROM habitaciones h
+        LEFT JOIN costes_habitaciones c ON h.id = c.habitacion_id
+        WHERE h.hotel_id = :hotel_id
+    ");
     $stmtHabitaciones->execute([':hotel_id' => $hotel_id]);
     $habitaciones = $stmtHabitaciones->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -113,6 +98,23 @@ if (isset($_GET['id'])) {
             document.getElementById('formularioReserva').style.display = 'block';
             document.getElementById('btnMostrarReserva').style.display = 'none';
         }
+
+        function calcularTotal() {
+            const habitacionSelect = document.querySelector('select[name="habitacion_id"]');
+            const entrada = new Date(document.querySelector('input[name="fecha_entrada"]').value);
+            const salida = new Date(document.querySelector('input[name="fecha_salida"]').value);
+            const precio = parseFloat(habitacionSelect.selectedOptions[0].dataset.precio);
+
+            if (entrada && salida && !isNaN(precio) && salida > entrada) {
+                const diff = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
+                const total = diff * precio;
+                document.getElementById('precioPorNoche').innerText = precio.toFixed(2);
+                document.getElementById('totalEstimado').innerText = total.toFixed(2);
+            } else {
+                document.getElementById('precioPorNoche').innerText = "--";
+                document.getElementById('totalEstimado').innerText = "--";
+            }
+        }
     </script>
 </head>
 <body>
@@ -122,34 +124,23 @@ if (isset($_GET['id'])) {
 
 <?php if (!isset($hotel)): ?>
     <h2>Hoteles disponibles en Panamá</h2>
-    <div class="hotel-grid">
-        <?php
-        $stmt = $conn->query("SELECT id, nombre, direccion FROM hoteles WHERE aprobado = 1");
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
-            $imagen = "../img_hoteles/" . ($row['imagen'] ?? 'default.jpg');
-        ?>
-            <a class="hotel-card" href="ver_hotel.php?id=<?= intval($row['id']) ?>">
-                <img src="<?= $imagen ?>" alt="Imagen del hotel" style="width:100%; height:200px; object-fit:cover; border-radius: 10px;">
-                <h3><?= htmlspecialchars($row['nombre']) ?></h3>
-                <p><?= htmlspecialchars($row['direccion']) ?></p>
-            </a>
-        <?php endwhile; ?>
-    </div>
 <?php else: ?>
     <h1><?= htmlspecialchars($hotel['nombre']) ?></h1>
-
-    <!-- Imagen del hotel -->
     <img src="<?= htmlspecialchars($imagenHotel) ?>" alt="Imagen del hotel" style="max-width:600px; width:100%; border-radius: 10px; margin-bottom: 20px;">
-
     <p><strong>Ubicación:</strong> <?= htmlspecialchars($hotel['direccion']) ?></p>
     <p><?= htmlspecialchars($hotel['descripcion']) ?></p>
+
+    <?php if (!empty($hotel['nombre_editor'])): ?>
+        <p><strong>Publicado por:</strong> <?= htmlspecialchars($hotel['nombre_editor']) ?></p>
+    <?php endif; ?>
 
     <h3>Habitaciones disponibles:</h3>
     <?php if ($habitaciones): ?>
         <?php foreach ($habitaciones as $hab): ?>
             <div class="habitacion-card">
                 <strong>Tipo:</strong> <?= htmlspecialchars($hab['tipo']) ?><br>
-                <strong>Capacidad:</strong> <?= intval($hab['capacidad']) ?> personas
+                <strong>Capacidad:</strong> <?= intval($hab['capacidad']) ?> personas<br>
+                <strong>Precio por noche:</strong> $<?= number_format($hab['precio_por_noche'], 2) ?>
             </div>
         <?php endforeach; ?>
     <?php else: ?>
@@ -172,23 +163,26 @@ if (isset($_GET['id'])) {
 
             <form method="POST" action="ver_hotel.php?id=<?= $hotel_id ?>">
                 <label for="habitacion_id">Habitación:</label>
-                <select name="habitacion_id" required>
+                <select name="habitacion_id" required onchange="calcularTotal()">
                     <option value="">-- Seleccione una habitación --</option>
                     <?php foreach ($habitaciones as $hab): ?>
-                        <option value="<?= $hab['id'] ?>">
-                            <?= htmlspecialchars($hab['tipo']) ?> (Capacidad: <?= intval($hab['capacidad']) ?>)
+                        <option value="<?= $hab['id'] ?>" data-precio="<?= $hab['precio_por_noche'] ?>">
+                            <?= htmlspecialchars($hab['tipo']) ?> (Cap: <?= intval($hab['capacidad']) ?>) - $<?= number_format($hab['precio_por_noche'], 2) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
 
                 <label for="fecha_entrada">Fecha de Entrada:</label>
-                <input type="date" name="fecha_entrada" required>
+                <input type="date" name="fecha_entrada" required onchange="calcularTotal()">
 
                 <label for="fecha_salida">Fecha de Salida:</label>
-                <input type="date" name="fecha_salida" required>
+                <input type="date" name="fecha_salida" required onchange="calcularTotal()">
 
                 <label for="personas">Personas:</label>
                 <input type="number" name="personas" min="1" value="1" required>
+
+                <p><strong>Precio por noche:</strong> $<span id="precioPorNoche">--</span></p>
+                <p><strong>Total estimado:</strong> $<span id="totalEstimado">--</span></p>
 
                 <button type="submit">Confirmar Reserva</button>
             </form>
@@ -196,10 +190,8 @@ if (isset($_GET['id'])) {
     <?php else: ?>
         <p><em>Debes iniciar sesión para poder reservar.</em></p>
     <?php endif; ?>
-
 <?php endif; ?>
-<br><br>
-<?php include("../index/footer.php"); ?>
 
+<?php include("../index/footer.php"); ?>
 </body>
 </html>

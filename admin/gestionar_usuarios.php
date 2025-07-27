@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['accion'
     $idActual = $_SESSION['id'] ?? 0;
 
     if ($id === $idActual && $accion === 'desactivar') {
-        // No permitir desactivarse a sí mismo
         echo "<script>alert('No puedes desactivarte a ti mismo.'); window.location.href='gestionar_usuarios.php';</script>";
         exit;
     }
@@ -26,6 +25,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['accion'
     $activo = $accion === 'desactivar' ? 0 : 1;
     $stmt = $conexion->prepare("UPDATE usuarios SET activo = :activo WHERE id = :id");
     $stmt->execute(['activo' => $activo, 'id' => $id]);
+}
+
+// Editar nombre y apellido del usuario
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_usuario'])) {
+    $idEditar = (int) $_POST['id'];
+    $nuevoNombre = trim($_POST['nombre'] ?? '');
+    $nuevoApellido = trim($_POST['apellido'] ?? '');
+
+    if ($nuevoNombre !== '' && $nuevoApellido !== '') {
+        $stmt = $conexion->prepare("UPDATE usuarios SET nombre = :nombre, apellido = :apellido WHERE id = :id");
+        $stmt->execute([
+            'nombre' => $nuevoNombre,
+            'apellido' => $nuevoApellido,
+            'id' => $idEditar
+        ]);
+    }
 }
 
 // Obtener usuarios organizados por rol
@@ -46,6 +61,7 @@ foreach ($roles as $rol) {
   <title>Gestionar Usuarios</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="../css/estilosGenerales.css">
+  <link rel="stylesheet" href="../css/formEditar.css">
 </head>
 <body>
   <div class="admin-panel">
@@ -66,18 +82,34 @@ foreach ($roles as $rol) {
                 <p><strong>Correo:</strong> <?= htmlspecialchars($user['correo']) ?></p>
                 <p><strong>Rol:</strong> <?= $user['rol'] ?></p>
                 <p><strong>Estado:</strong> <?= $user['activo'] ? 'Activo' : 'Inactivo' ?></p>
+
+                <!-- Activar/Desactivar -->
                 <form method="POST">
                   <input type="hidden" name="id" value="<?= $user['id'] ?>">
                   <input type="hidden" name="accion" value="<?= $user['activo'] ? 'desactivar' : 'activar' ?>">
-                <?php
-$isSelf = $user['id'] == ($_SESSION['id'] ?? 0) && $user['activo'];
-?>
-<button 
-  type="<?= $isSelf ? 'button' : 'submit' ?>" 
-  class="btn-estado <?= $isSelf ? 'btn-disabled' : '' ?>" 
-  <?= $isSelf ? 'data-self="true"' : '' ?>>
-  <?= $user['activo'] ? 'Desactivar' : 'Activar' ?>
-</button>
+                  <?php
+                    $isSelf = $user['id'] == ($_SESSION['id'] ?? 0) && $user['activo'];
+                  ?>
+                  <button 
+                    type="<?= $isSelf ? 'button' : 'submit' ?>" 
+                    class="btn-estado <?= $isSelf ? 'btn-disabled' : '' ?>" 
+                    <?= $isSelf ? 'data-self="true"' : '' ?>>
+                    <?= $user['activo'] ? 'Desactivar' : 'Activar' ?>
+                  </button>
+                </form>
+
+                <!-- Formulario de edición -->
+                <form method="POST" class="form-editar">
+                  <input type="hidden" name="id" value="<?= $user['id'] ?>">
+                  <input type="hidden" name="editar_usuario" value="1">
+
+                  <label for="nombre_<?= $user['id'] ?>">Nombre:</label>
+                  <input type="text" name="nombre" id="nombre_<?= $user['id'] ?>" value="<?= htmlspecialchars($user['nombre']) ?>" required>
+
+                  <label for="apellido_<?= $user['id'] ?>">Apellido:</label>
+                  <input type="text" name="apellido" id="apellido_<?= $user['id'] ?>" value="<?= htmlspecialchars($user['apellido']) ?>" required>
+
+                  <button type="submit">Guardar cambios</button>
                 </form>
               </div>
             <?php endforeach; ?>
@@ -100,6 +132,6 @@ $isSelf = $user['id'] == ($_SESSION['id'] ?? 0) && $user['activo'];
       });
     });
   });
-</script>
+  </script>
 </body>
 </html>

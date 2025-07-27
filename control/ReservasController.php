@@ -54,26 +54,47 @@ class ControlReserva {
         return $personas > $capacidad;
     }
 
-public function hacerReserva($usuario_id, $habitacion_id, $fecha_entrada, $fecha_salida, $personas) {
-    // Obtener el hotel_id correspondiente a la habitación
-    $sql = "SELECT hotel_id FROM habitaciones WHERE id = :habitacion_id";
-    $stmt = $this->db->getConexion()->prepare($sql);
-    $stmt->execute([':habitacion_id' => $habitacion_id]);
-    $hotel_id = $stmt->fetchColumn();
+    public function hacerReserva($usuario_id, $habitacion_id, $fecha_entrada, $fecha_salida, $personas) {
+        $conn = $this->db->getConexion();
 
-    if (!$hotel_id) {
-        throw new Exception("Habitación no encontrada o no asociada a un hotel válido.");
+        // Obtener hotel_id
+        $stmtHotel = $conn->prepare("SELECT hotel_id FROM habitaciones WHERE id = :habitacion_id");
+        $stmtHotel->execute([':habitacion_id' => $habitacion_id]);
+        $hotel_id = $stmtHotel->fetchColumn();
+
+        if (!$hotel_id) {
+            throw new Exception("Habitación no encontrada o no asociada a un hotel válido.");
+        }
+
+        // Obtener precio por noche
+        $stmtPrecio = $conn->prepare("SELECT precio_por_noche FROM costes_habitaciones WHERE habitacion_id = :habitacion_id");
+        $stmtPrecio->execute([':habitacion_id' => $habitacion_id]);
+        $precio = $stmtPrecio->fetchColumn();
+
+        if ($precio === false) {
+            throw new Exception("No se encontró precio asignado para la habitación.");
+        }
+
+        // Calcular total por cantidad de noches
+        $entrada = new DateTime($fecha_entrada);
+        $salida = new DateTime($fecha_salida);
+        $dias = $entrada->diff($salida)->days;
+
+        if ($dias <= 0) {
+            throw new Exception("El rango de fechas no es válido.");
+        }
+
+        $total = $dias * $precio;
+
+        // Insertar reserva con total
+        return $this->db->insertSeguro('reservas', [
+            'usuario_id'     => $usuario_id,
+            'hotel_id'       => $hotel_id,
+            'habitacion_id'  => $habitacion_id,
+            'fecha_entrada'  => $fecha_entrada,
+            'fecha_salida'   => $fecha_salida,
+            'personas'       => $personas,
+            'total'          => $total
+        ]);
     }
-
-    // Insertar la reserva
-    return $this->db->insertSeguro('reservas', [
-        'usuario_id'     => $usuario_id,
-        'hotel_id'       => $hotel_id, // AHORA SE INCLUYE
-        'habitacion_id'  => $habitacion_id,
-        'fecha_entrada'  => $fecha_entrada,
-        'fecha_salida'   => $fecha_salida,
-        'personas'       => $personas
-    ]);
-}
-
 }
